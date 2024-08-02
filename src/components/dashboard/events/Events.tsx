@@ -6,48 +6,38 @@ import classes from './Events.module.css';
 const data = [
   {
     id: '1',
-    avatar:
-      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png',
-    name: 'Robert Wolfkisser',
-    job: 'Engineer',
-    email: 'rob_wolf@gmail.com',
+    title: 'Robert Wolfkisser',
+    beginDate: '2024-04-09',
+    endDate: '2024-04-10',
   },
   {
     id: '2',
-    avatar:
-      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-7.png',
-    name: 'Jill Jailbreaker',
-    job: 'Engineer',
-    email: 'jj@breaker.com',
+    title: 'Jill Jailbreaker',
+    beginDate: '2024-04-09',
+    endDate: '2024-04-10',
   },
   {
     id: '3',
-    avatar:
-      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png',
-    name: 'Henry Silkeater',
-    job: 'Designer',
-    email: 'henry@silkeater.io',
+    title: 'Henry Silkeater',
+    beginDate: '2024-04-09',
+    endDate: '2024-04-10',
   },
   {
     id: '4',
-    avatar:
-      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png',
-    name: 'Bill Horsefighter',
-    job: 'Designer',
-    email: 'bhorsefighter@gmail.com',
+    title: 'Bill Horsefighter',
+    beginDate: '2024-04-09',
+    endDate: '2024-04-10',
   },
   {
     id: '5',
-    avatar:
-      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-10.png',
-    name: 'Jeremy Footviewer',
-    job: 'Manager',
-    email: 'jeremy@foot.dev',
+    title: 'Jeremy Footviewer',
+    beginDate: '2024-04-09',
+    endDate: '2024-04-10',
   },
 ];
 
 export function DashboardEvents() {
-  const [selection, setSelection] = useState(['1']);
+  const [selection, setSelection] = useState<string[]>([]);
   const toggleRow = (id: string) =>
     setSelection((current) =>
       current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
@@ -63,15 +53,12 @@ export function DashboardEvents() {
           <Checkbox checked={selection.includes(item.id)} onChange={() => toggleRow(item.id)} />
         </Table.Td>
         <Table.Td>
-          <Group gap="sm">
-            <Avatar size={26} src={item.avatar} radius={26} />
-            <Text size="sm" fw={500}>
-              {item.name}
-            </Text>
-          </Group>
+          <Text size="sm" fw={500}>
+            {item.title}
+          </Text>
         </Table.Td>
-        <Table.Td>{item.email}</Table.Td>
-        <Table.Td>{item.job}</Table.Td>
+        <Table.Td>{item.beginDate}</Table.Td>
+        <Table.Td>{item.endDate}</Table.Td>
       </Table.Tr>
     );
   });
@@ -88,9 +75,9 @@ export function DashboardEvents() {
                 indeterminate={selection.length > 0 && selection.length !== data.length}
               />
             </Table.Th>
-            <Table.Th>User</Table.Th>
-            <Table.Th>Email</Table.Th>
-            <Table.Th>Job</Table.Th>
+            <Table.Th>Title</Table.Th>
+            <Table.Th>Begin Date</Table.Th>
+            <Table.Th>End Date</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
