@@ -17,6 +17,7 @@ import {
     rem,
     useMantineTheme,
     Image,
+    Anchor,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -72,7 +73,7 @@ export function AppHeader() {
                 </ThemeIcon>
                 <div>
                     <Text size="sm" fw={500}>
-                        {item.title}
+                        <Anchor href={item.link} >{item.title}</Anchor>
                     </Text>
                     <Text size="xs" c="dimmed">
                         {item.description}
@@ -98,7 +99,7 @@ export function AppHeader() {
                 <Group justify="space-between" h="100%">
                     <Image src={logo} alt="Logo" width={40} height={40} />
 
-                    <Group h="100%" gap={0} visibleFrom="sm">
+                    <Group h="100%" gap={0} visibleFrom="md">
                         <a href="/" className={classes.link}>
                             Home
                         </a>
@@ -136,17 +137,17 @@ export function AppHeader() {
                             Support Us
                         </a>
                         <a href="/about-us" className={classes.link}>
-                            About Us
+                            About
                         </a>
                     </Group>
 
-                    <Group visibleFrom="sm">
+                    <Group visibleFrom="md">
                         <Button variant="default" onClick={handleLogin}>Log in</Button>
                         <Button onClick={handleRegister}>Sign up</Button>
                         <AvatarMenu />
                     </Group>
 
-                    <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
+                    <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="md" />
                 </Group>
             </header>
 
@@ -156,7 +157,7 @@ export function AppHeader() {
                 size="100%"
                 padding="md"
                 title="Navigation"
-                hiddenFrom="sm"
+                hiddenFrom="md"
                 zIndex={1000000}
             >
                 <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
@@ -184,7 +185,7 @@ export function AppHeader() {
                         Support Us
                     </a>
                     <a href="/about-us" className={classes.link}>
-                        About Us
+                        About
                     </a>
                     <Divider my="sm" />
 

@@ -6,8 +6,10 @@ import {
     IconSchool,
     IconLogout,
 } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 
 export function AvatarMenu() {
+    const navigate = useNavigate();
     return (
         <Menu shadow="md" width={200} trigger="click-hover" openDelay={100} closeDelay={200}>
             <Menu.Target>
@@ -25,7 +27,9 @@ export function AvatarMenu() {
                     Tutoring
                 </Menu.Item>
                 <Menu.Divider />
-                <Menu.Item leftSection={<IconDashboard style={{ width: rem(14), height: rem(14) }} />} >
+                <Menu.Item leftSection={<IconDashboard style={{ width: rem(14), height: rem(14) }} />} onClick={() => {
+                    navigate('/dashboard');
+                }}>
                     Dashboard
                 </Menu.Item>
                 <Menu.Divider />
