@@ -28,3 +28,8 @@ export async function doPost(url: string, payload: Record<string, any>) {
 
     return await response.json();
 }
+
+export const getToken = () => {
+    const token = localStorage.getItem('authToken');
+    return token;
+};

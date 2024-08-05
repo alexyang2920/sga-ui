@@ -37,7 +37,8 @@ function LoginForm(props: PaperProps) {
         setError(null);
         setLoading(true);
         try {
-            await signin(formData);
+            const { access_token } = await signin(formData);
+            localStorage.setItem('authToken', access_token);
             notifications.show({
                 title: 'Success!',
                 message: 'You’ve logged in successfully.',
