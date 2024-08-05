@@ -32,3 +32,9 @@ function GoogleIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 export function GoogleButton(props: ButtonProps & React.ComponentPropsWithoutRef<'button'>) {
     return <Button leftSection={<GoogleIcon />} variant="default" {...props} />;
 }
+
+/* <Divider label="Or continue with email" labelPosition="center" my="lg" />
+
+<Group grow mb="md" mt="md">
+<GoogleButton radius="xl">Google</GoogleButton>
+</Group> */

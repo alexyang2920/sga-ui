@@ -8,14 +8,15 @@ import {
     Group,
     PaperProps,
     Button,
+    Checkbox,
     Anchor,
     Stack,
 } from '@mantine/core';
 
-function LoginForm(props: PaperProps) {
+function RegisterForm(props: PaperProps) {
     const navigate = useNavigate();
     const handleRedirect = () => {
-        navigate('/register', { replace: true });
+        navigate('/login', { replace: true });
     };
 
     const form = useForm({
@@ -35,11 +36,19 @@ function LoginForm(props: PaperProps) {
     return (
         <Paper radius="md" p="xl" withBorder {...props} style={{ maxWidth: '800px', minWidth: '400px' }}>
             <Text size="lg" fw={500} style={{ paddingBottom: "20px" }}>
-                Login
+                Register
             </Text>
-
             <form onSubmit={form.onSubmit(() => { })}>
                 <Stack>
+                    <TextInput
+                        required
+                        label="Name"
+                        placeholder="Your name"
+                        value={form.values.name}
+                        onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
+                        radius="md"
+                    />
+
                     <TextInput
                         required
                         label="Email"
@@ -60,14 +69,19 @@ function LoginForm(props: PaperProps) {
                         radius="md"
                     />
 
+                    <Checkbox
+                        label="I accept terms and conditions"
+                        checked={form.values.terms}
+                        onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
+                    />
                 </Stack>
 
                 <Group justify="space-between" mt="xl">
                     <Anchor component="button" type="button" c="dimmed" onClick={handleRedirect} size="xs">
-                        Don't have an account? Register
+                        Have an account? Login
                     </Anchor>
                     <Button type="submit" radius="xl">
-                        Login
+                        Register
                     </Button>
                 </Group>
             </form>
@@ -75,8 +89,8 @@ function LoginForm(props: PaperProps) {
     );
 }
 
-export function LoginPage() {
+export function SignupPage() {
     return (
-        <LoginForm />
+        <RegisterForm />
     );
 }
