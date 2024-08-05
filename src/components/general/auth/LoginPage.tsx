@@ -1,4 +1,3 @@
-import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 import {
     TextInput,
@@ -9,31 +8,60 @@ import {
     PaperProps,
     Button,
     Anchor,
-    Stack
+    Stack,
+    Notification,
+    rem,
 } from "@mantine/core";
+import { notifications } from '@mantine/notifications';
+import { IconX, IconCheck } from '@tabler/icons-react';
+import { useCallback, useState } from 'react';
+import { signin } from '../../../api/auth';
 
 function LoginForm(props: PaperProps) {
     const navigate = useNavigate();
-    const handleRedirect = () => {
+
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    const [formData, setFormData] = useState({
+        'email': '',
+        'password': '',
+    });
+
+    const handleRedirect = useCallback(() => {
         navigate("/signup", { replace: true });
+    }, [navigate]);
+
+    const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setError(null);
+        setLoading(true);
+        try {
+            await signin(formData);
+            notifications.show({
+                title: 'Success!',
+                message: 'You’ve logged in successfully.',
+                color: 'green',
+                icon: <IconCheck size={16} />,
+                autoClose: 5000,
+              });
+            navigate("/", {replace: true});
+        } catch (error) {
+            setError(error as any);
+        } finally {
+            setLoading(false);
+        }
+    }, [formData, navigate]);
+
+    const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setFormData({
+            ...formData,
+            [field]: value,
+        });
     };
 
-    const form = useForm({
-        initialValues: {
-            email: "",
-            name: "",
-            password: "",
-            terms: true
-        },
-
-        validate: {
-            email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-            password: (val) =>
-                val.length <= 6
-                    ? "Password should include at least 6 characters"
-                    : null
-        }
-    });
+    const xIcon = <IconX style={{ width: rem(20), height: rem(20) }} />;
 
     return (
         <Paper
@@ -47,20 +75,14 @@ function LoginForm(props: PaperProps) {
                 Login
             </Text>
 
-            <form onSubmit={form.onSubmit(() => {})}>
+            <form onSubmit={handleSubmit}>
                 <Stack>
                     <TextInput
                         required
                         label="Email"
-                        placeholder="hello@mantine.dev"
-                        value={form.values.email}
-                        onChange={(event) =>
-                            form.setFieldValue(
-                                "email",
-                                event.currentTarget.value
-                            )
-                        }
-                        error={form.errors.email && "Invalid email"}
+                        placeholder="hello@sharegrow.org"
+                        value={formData.email}
+                        onChange={handleChange("email")}
                         radius="md"
                     />
 
@@ -68,17 +90,8 @@ function LoginForm(props: PaperProps) {
                         required
                         label="Password"
                         placeholder="Your password"
-                        value={form.values.password}
-                        onChange={(event) =>
-                            form.setFieldValue(
-                                "password",
-                                event.currentTarget.value
-                            )
-                        }
-                        error={
-                            form.errors.password &&
-                            "Password should include at least 6 characters"
-                        }
+                        value={formData.password}
+                        onChange={handleChange("password")}
                         radius="md"
                     />
                 </Stack>
@@ -93,10 +106,17 @@ function LoginForm(props: PaperProps) {
                     >
                         Don't have an account? Signup
                     </Anchor>
-                    <Button type="submit" radius="xl">
+                    <Button type="submit" radius="xl" loading={loading}>
                         Login
                     </Button>
                 </Group>
+
+                {error && (
+                    <Notification icon={xIcon} color="red" title="Bummer!" onClose={() => setError(null)}>
+                        {error}
+                    </Notification>
+                )}
+
             </form>
         </Paper>
     );

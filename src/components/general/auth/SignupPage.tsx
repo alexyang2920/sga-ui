@@ -10,14 +10,20 @@ import {
     Button,
     Checkbox,
     Anchor,
-    Stack
+    Stack,
+    Notification,
+    rem
 } from "@mantine/core";
+import { IconX, IconCheck } from '@tabler/icons-react';
+import { signup } from '../../../api/auth';
+import { useCallback, useState } from "react";
 
 function SignupForm(props: PaperProps) {
     const navigate = useNavigate();
-    const handleRedirect = () => {
-        navigate("/login", { replace: true });
-    };
+
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const form = useForm({
         initialValues: {
@@ -30,11 +36,32 @@ function SignupForm(props: PaperProps) {
         validate: {
             email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
             password: (val) =>
-                val.length <= 6
-                    ? "Password should include at least 6 characters"
+                val.length < 8
+                    ? "Password should include at least 8 characters"
                     : null
         }
     });
+
+    const handleSubmit = useCallback(async () => {
+        setSuccess(false);
+        setError(null);
+        setLoading(true);
+        try {
+            await signup(form.values);
+            setSuccess(true);
+        } catch (error) {
+            setError(error as any);
+        } finally {
+            setLoading(false);
+        }
+    }, [form.values]);
+
+    const handleRedirect = useCallback(() => {
+        navigate("/login", { replace: true });
+    }, [navigate]);
+
+    const xIcon = <IconX style={{ width: rem(20), height: rem(20) }} />;
+    const checkIcon = <IconCheck style={{ width: rem(20), height: rem(20) }} />
 
     return (
         <Paper
@@ -47,7 +74,7 @@ function SignupForm(props: PaperProps) {
             <Text size="lg" fw={500} style={{ paddingBottom: "20px" }}>
                 Sign up
             </Text>
-            <form onSubmit={form.onSubmit(() => {})}>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack>
                     <TextInput
                         required
@@ -91,12 +118,13 @@ function SignupForm(props: PaperProps) {
                         }
                         error={
                             form.errors.password &&
-                            "Password should include at least 6 characters"
+                            "Password should include at least 8 characters"
                         }
                         radius="md"
                     />
 
                     <Checkbox
+                        required
                         label="I accept terms and conditions"
                         checked={form.values.terms}
                         onChange={(event) =>
@@ -118,10 +146,20 @@ function SignupForm(props: PaperProps) {
                     >
                         Have an account? Login
                     </Anchor>
-                    <Button type="submit" radius="xl">
+                    <Button type="submit" radius="xl" loading={loading}>
                         Sign up
                     </Button>
                 </Group>
+                {error && (
+                    <Notification icon={xIcon} color="red" title="Bummer!" onClose={() => setError(null)}>
+                        {error}
+                    </Notification>
+                )}
+                {success && (
+                    <Notification title="Success" icon={checkIcon} color="teal" onClose={() => setSuccess(false)}>
+                        You have successfully signed up.
+                    </Notification>
+                )}
             </form>
         </Paper>
     );
