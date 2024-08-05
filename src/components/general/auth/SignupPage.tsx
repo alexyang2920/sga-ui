@@ -1,5 +1,5 @@
-import { useForm } from '@mantine/form';
-import { useNavigate } from 'react-router-dom';
+import { useForm } from "@mantine/form";
+import { useNavigate } from "react-router-dom";
 import {
     TextInput,
     PasswordInput,
@@ -10,42 +10,56 @@ import {
     Button,
     Checkbox,
     Anchor,
-    Stack,
-} from '@mantine/core';
+    Stack
+} from "@mantine/core";
 
-function RegisterForm(props: PaperProps) {
+function SignupForm(props: PaperProps) {
     const navigate = useNavigate();
     const handleRedirect = () => {
-        navigate('/login', { replace: true });
+        navigate("/login", { replace: true });
     };
 
     const form = useForm({
         initialValues: {
-            email: '',
-            name: '',
-            password: '',
-            terms: true,
+            email: "",
+            name: "",
+            password: "",
+            terms: true
         },
 
         validate: {
-            email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-            password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
-        },
+            email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+            password: (val) =>
+                val.length <= 6
+                    ? "Password should include at least 6 characters"
+                    : null
+        }
     });
 
     return (
-        <Paper radius="md" p="xl" withBorder {...props} style={{ maxWidth: '800px', minWidth: '400px' }}>
+        <Paper
+            radius="md"
+            p="xl"
+            withBorder
+            {...props}
+            style={{ maxWidth: "800px", minWidth: "400px" }}
+        >
             <Text size="lg" fw={500} style={{ paddingBottom: "20px" }}>
-                Register
+                Sign up
             </Text>
-            <form onSubmit={form.onSubmit(() => { })}>
+            <form onSubmit={form.onSubmit(() => {})}>
                 <Stack>
                     <TextInput
                         required
                         label="Name"
                         placeholder="Your name"
                         value={form.values.name}
-                        onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
+                        onChange={(event) =>
+                            form.setFieldValue(
+                                "name",
+                                event.currentTarget.value
+                            )
+                        }
                         radius="md"
                     />
 
@@ -54,8 +68,13 @@ function RegisterForm(props: PaperProps) {
                         label="Email"
                         placeholder="hello@mantine.dev"
                         value={form.values.email}
-                        onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-                        error={form.errors.email && 'Invalid email'}
+                        onChange={(event) =>
+                            form.setFieldValue(
+                                "email",
+                                event.currentTarget.value
+                            )
+                        }
+                        error={form.errors.email && "Invalid email"}
                         radius="md"
                     />
 
@@ -64,24 +83,43 @@ function RegisterForm(props: PaperProps) {
                         label="Password"
                         placeholder="Your password"
                         value={form.values.password}
-                        onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-                        error={form.errors.password && 'Password should include at least 6 characters'}
+                        onChange={(event) =>
+                            form.setFieldValue(
+                                "password",
+                                event.currentTarget.value
+                            )
+                        }
+                        error={
+                            form.errors.password &&
+                            "Password should include at least 6 characters"
+                        }
                         radius="md"
                     />
 
                     <Checkbox
                         label="I accept terms and conditions"
                         checked={form.values.terms}
-                        onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
+                        onChange={(event) =>
+                            form.setFieldValue(
+                                "terms",
+                                event.currentTarget.checked
+                            )
+                        }
                     />
                 </Stack>
 
                 <Group justify="space-between" mt="xl">
-                    <Anchor component="button" type="button" c="dimmed" onClick={handleRedirect} size="xs">
+                    <Anchor
+                        component="button"
+                        type="button"
+                        c="dimmed"
+                        onClick={handleRedirect}
+                        size="xs"
+                    >
                         Have an account? Login
                     </Anchor>
                     <Button type="submit" radius="xl">
-                        Register
+                        Sign up
                     </Button>
                 </Group>
             </form>
@@ -90,7 +128,5 @@ function RegisterForm(props: PaperProps) {
 }
 
 export function SignupPage() {
-    return (
-        <RegisterForm />
-    );
+    return <SignupForm />;
 }

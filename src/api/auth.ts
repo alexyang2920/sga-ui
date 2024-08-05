@@ -1,4 +1,4 @@
-import { doPost } from './common';
+import { doPost } from "./common";
 
 interface SignupPayload {
     name: string;
@@ -8,5 +8,5 @@ interface SignupPayload {
 }
 
 export async function signup(payload: SignupPayload) {
-    return await doPost('/api/users', payload);
+    return await doPost("/api/users", payload);
 }

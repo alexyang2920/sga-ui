@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import {
     HoverCard,
     Group,
@@ -17,51 +17,52 @@ import {
     rem,
     useMantineTheme,
     Image,
-    Anchor,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+    Anchor
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import {
     IconCode,
     IconBook,
     IconCoin,
-    IconChevronDown,
-} from '@tabler/icons-react';
-import classes from './Header.module.css';
+    IconChevronDown
+} from "@tabler/icons-react";
+import classes from "./Header.module.css";
 
-import logo from './logo.webp';
-import { AvatarMenu } from './AvatarMenu';
+import logo from "./logo.webp";
+import { AvatarMenu } from "./AvatarMenu";
 
 const resourcesLinkData = [
     {
         icon: IconCode,
-        title: 'Events',
-        description: 'Current and incoming events',
-        link: '/events',
+        title: "Events",
+        description: "Current and incoming events",
+        link: "/events"
     },
     {
         icon: IconCoin,
-        title: 'Clubs',
-        description: 'Special interested clubs',
-        link: '/clubs',
+        title: "Clubs",
+        description: "Special interested clubs",
+        link: "/clubs"
     },
     {
         icon: IconBook,
-        title: 'Tutoring Programs',
-        description: 'Summer tutoring programs',
-        link: '/tutoring-programs'
+        title: "Tutoring Programs",
+        description: "Summer tutoring programs",
+        link: "/tutoring-programs"
     },
     {
         icon: IconCode,
-        title: 'Past Events',
-        description: 'Events happened in the past',
-        link: '/past-events'
-    },
+        title: "Past Events",
+        description: "Events happened in the past",
+        link: "/past-events"
+    }
 ];
 
 export function AppHeader() {
     const navigate = useNavigate();
 
-    const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
+    const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
+        useDisclosure(false);
     const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
     const theme = useMantineTheme();
 
@@ -69,11 +70,14 @@ export function AppHeader() {
         <UnstyledButton className={classes.subLink} key={item.title}>
             <Group wrap="nowrap" align="flex-start">
                 <ThemeIcon size={34} variant="default" radius="md">
-                    <item.icon style={{ width: rem(22), height: rem(22) }} color={theme.colors.blue[6]} />
+                    <item.icon
+                        style={{ width: rem(22), height: rem(22) }}
+                        color={theme.colors.blue[6]}
+                    />
                 </ThemeIcon>
                 <div>
                     <Text size="sm" fw={500}>
-                        <Anchor href={item.link} >{item.title}</Anchor>
+                        <Anchor href={item.link}>{item.title}</Anchor>
                     </Text>
                     <Text size="xs" c="dimmed">
                         {item.description}
@@ -85,12 +89,12 @@ export function AppHeader() {
 
     const handleLogin = () => {
         closeDrawer();
-        navigate('/login');
+        navigate("/login");
     };
 
-    const handleRegister = () => {
+    const handleSignup = () => {
         closeDrawer();
-        navigate('/register');
+        navigate("/signup");
     };
 
     return (
@@ -103,7 +107,13 @@ export function AppHeader() {
                         <a href="/" className={classes.link}>
                             Home
                         </a>
-                        <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
+                        <HoverCard
+                            width={600}
+                            position="bottom"
+                            radius="md"
+                            shadow="md"
+                            withinPortal
+                        >
                             <HoverCard.Target>
                                 <a href="#" className={classes.link}>
                                     <Center inline>
@@ -111,14 +121,17 @@ export function AppHeader() {
                                             Resources
                                         </Box>
                                         <IconChevronDown
-                                            style={{ width: rem(16), height: rem(16) }}
+                                            style={{
+                                                width: rem(16),
+                                                height: rem(16)
+                                            }}
                                             color={theme.colors.blue[6]}
                                         />
                                     </Center>
                                 </a>
                             </HoverCard.Target>
 
-                            <HoverCard.Dropdown style={{ overflow: 'hidden' }}>
+                            <HoverCard.Dropdown style={{ overflow: "hidden" }}>
                                 <Group justify="space-between" px="md">
                                     <Text fw={500}>Resources</Text>
                                 </Group>
@@ -142,12 +155,18 @@ export function AppHeader() {
                     </Group>
 
                     <Group visibleFrom="md">
-                        <Button variant="default" onClick={handleLogin}>Log in</Button>
-                        <Button onClick={handleRegister}>Sign up</Button>
+                        <Button variant="default" onClick={handleLogin}>
+                            Log in
+                        </Button>
+                        <Button onClick={handleSignup}>Sign up</Button>
                         <AvatarMenu />
                     </Group>
 
-                    <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="md" />
+                    <Burger
+                        opened={drawerOpened}
+                        onClick={toggleDrawer}
+                        hiddenFrom="md"
+                    />
                 </Group>
             </header>
 
@@ -166,7 +185,10 @@ export function AppHeader() {
                     <a href="#" className={classes.link}>
                         Home
                     </a>
-                    <UnstyledButton className={classes.link} onClick={toggleLinks}>
+                    <UnstyledButton
+                        className={classes.link}
+                        onClick={toggleLinks}
+                    >
                         <Center inline>
                             <Box component="span" mr={5}>
                                 Resources
@@ -190,8 +212,10 @@ export function AppHeader() {
                     <Divider my="sm" />
 
                     <Group justify="center" grow pb="xl" px="md">
-                        <Button variant="default" onClick={handleLogin}>Log in</Button>
-                        <Button onClick={handleRegister}>Sign up</Button>
+                        <Button variant="default" onClick={handleLogin}>
+                            Log in
+                        </Button>
+                        <Button onClick={handleSignup}>Sign up</Button>
                     </Group>
                 </ScrollArea>
             </Drawer>
