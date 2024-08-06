@@ -30,6 +30,7 @@ import classes from "./Header.module.css";
 
 import logo from "./logo.webp";
 import { AvatarMenu } from "./AvatarMenu";
+import useAuth from "../hooks/useAuth";
 
 const resourcesLinkData = [
     {
@@ -59,6 +60,7 @@ const resourcesLinkData = [
 ];
 
 export function AppHeader() {
+    const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -155,11 +157,16 @@ export function AppHeader() {
                     </Group>
 
                     <Group visibleFrom="md">
-                        <Button variant="default" onClick={handleLogin}>
-                            Log in
-                        </Button>
-                        <Button onClick={handleSignup}>Sign up</Button>
-                        <AvatarMenu />
+                        {isAuthenticated ? (
+                            <AvatarMenu />
+                        ) : (
+                            <>
+                                <Button variant="default" onClick={handleLogin}>
+                                    Log in
+                                </Button>
+                                <Button onClick={handleSignup}>Sign up</Button>
+                            </>
+                        )}
                     </Group>
 
                     <Burger
@@ -212,10 +219,16 @@ export function AppHeader() {
                     <Divider my="sm" />
 
                     <Group justify="center" grow pb="xl" px="md">
-                        <Button variant="default" onClick={handleLogin}>
-                            Log in
-                        </Button>
-                        <Button onClick={handleSignup}>Sign up</Button>
+                        {isAuthenticated ? (
+                            <AvatarMenu />
+                        ) : (
+                            <>
+                                <Button variant="default" onClick={handleLogin}>
+                                    Log in
+                                </Button>
+                                <Button onClick={handleSignup}>Sign up</Button>
+                            </>
+                        )}
                     </Group>
                 </ScrollArea>
             </Drawer>

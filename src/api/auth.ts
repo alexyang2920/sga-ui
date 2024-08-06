@@ -1,4 +1,4 @@
-import { doPost } from "./common";
+import { doPost, doFormPost } from "./common";
 
 interface SignupPayload {
     name: string;
@@ -20,15 +20,5 @@ export async function signin(payload: SigninPayload) {
     const data = new FormData();
     data.append('username', payload.email);
     data.append('password', payload.password);
-
-    const response = await fetch("/api/auth/token", {
-        method: "POST",
-        body: data
-    });
-
-    if (!response.ok) {
-        throw new Error("Network response was not ok");
-    }
-
-    return await response.json();
+    return await doFormPost('/api/auth/token', data);
 }

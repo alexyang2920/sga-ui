@@ -1,35 +1,53 @@
-export async function doGet(url: string) {
-    const response = await fetch(url, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
+import { ApiError } from "./schemas";
 
-    if (!response.ok) {
-        throw new Error("Network response was not ok");
+export async function apiFetch(url: string, method: string, headers: Record<string, any>, payload?: Record<string, any> | FormData) {
+    const options = {
+        method: method,
+        headers: headers,
+    } as RequestInit;
+
+    if (payload) {
+        options.body = payload instanceof FormData ? payload : JSON.stringify(payload);
     }
 
-    return await response.json();
+    try {
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw {
+                message: error.message || 'An error occurred',
+                status: response.status,
+            };
+        }
+
+        return await response.json();
+    } catch (error) {
+        // Handle network errors or other unexpected issues
+        throw {
+            status: 500,
+            message: error instanceof Error ? error.message : "An unexpected error occurred",
+        } as ApiError;
+    }
 }
+
+
+export async function doGet(url: string) {
+    const headers = {
+        "Content-Type": "application/json"
+    };
+    return await apiFetch(url, 'GET', headers);
+}
+
 
 export async function doPost(url: string, payload: Record<string, any>) {
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-        throw new Error("Network response was not ok");
-    }
-
-    return await response.json();
+    const headers = {
+        "Content-Type": "application/json"
+    };
+    return await apiFetch(url, 'POST', headers, payload);
 }
 
-export const getToken = () => {
-    const token = localStorage.getItem('authToken');
-    return token;
-};
+
+export async function doFormPost(url: string, data: FormData) {
+    return await apiFetch(url, 'POST', {}, data);
+}

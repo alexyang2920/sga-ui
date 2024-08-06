@@ -11,14 +11,17 @@ import { BrowserRouter } from "react-router-dom";
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 
+import { AuthProvider } from './context/AuthProvider';
 import App from "./components/App.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <BrowserRouter>
             <MantineProvider>
-                <Notifications />
-                <App />
+                <AuthProvider>
+                    <Notifications />
+                    <App />
+                </AuthProvider>
             </MantineProvider>
         </BrowserRouter>
     </React.StrictMode>

@@ -7,9 +7,20 @@ import {
     IconLogout
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { RoleEnum } from "../api/schemas";
+
+const getInitialName = (name: string) => {
+    let parts = name.split(" ");
+    if (parts.length >= 2) {
+        return parts[0][0] + parts[1][0];
+    }
+    return name.substring(0, 2);
+};
 
 export function AvatarMenu() {
     const navigate = useNavigate();
+    const { logout, user, hasRole } = useAuth();
     return (
         <Menu
             shadow="md"
@@ -20,7 +31,7 @@ export function AvatarMenu() {
         >
             <Menu.Target>
                 <Avatar color="blue" radius="xl" style={{ cursor: "pointer" }}>
-                    AY
+                    {getInitialName(user?.name ?? '')}
                 </Avatar>
             </Menu.Target>
 
@@ -50,19 +61,25 @@ export function AvatarMenu() {
                 >
                     Tutoring
                 </Menu.Item>
-                <Menu.Divider />
-                <Menu.Item
-                    leftSection={
-                        <IconDashboard
-                            style={{ width: rem(14), height: rem(14) }}
-                        />
-                    }
-                    onClick={() => {
-                        navigate("/dashboard");
-                    }}
-                >
-                    Dashboard
-                </Menu.Item>
+
+                {hasRole(RoleEnum.Admin) && (
+                    <>
+                        <Menu.Divider />
+                        <Menu.Item
+                            leftSection={
+                                <IconDashboard
+                                    style={{ width: rem(14), height: rem(14) }}
+                                />
+                            }
+                            onClick={() => {
+                                navigate("/dashboard");
+                            }}
+                        >
+                            Dashboard
+                        </Menu.Item>
+                    </>
+                )}
+
                 <Menu.Divider />
                 <Menu.Item
                     color="red"
@@ -71,6 +88,10 @@ export function AvatarMenu() {
                             style={{ width: rem(14), height: rem(14) }}
                         />
                     }
+                    onClick={() => {
+                        logout();
+                        navigate("/", { replace: true });
+                    }}
                 >
                     Sign out
                 </Menu.Item>

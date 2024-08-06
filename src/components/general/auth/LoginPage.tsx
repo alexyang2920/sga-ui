@@ -16,8 +16,11 @@ import { notifications } from '@mantine/notifications';
 import { IconX, IconCheck } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
 import { signin } from '../../../api/auth';
+import useAuth from "../../../hooks/useAuth";
+import { ApiError } from "../../../api/schemas";
 
 function LoginForm(props: PaperProps) {
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const [error, setError] = useState<string | null>(null);
@@ -38,7 +41,7 @@ function LoginForm(props: PaperProps) {
         setLoading(true);
         try {
             const { access_token } = await signin(formData);
-            localStorage.setItem('authToken', access_token);
+            login(access_token);
             notifications.show({
                 title: 'Success!',
                 message: 'You’ve logged in successfully.',
@@ -48,7 +51,7 @@ function LoginForm(props: PaperProps) {
               });
             navigate("/", {replace: true});
         } catch (error) {
-            setError(error as any);
+            setError((error as ApiError).message ?? '');
         } finally {
             setLoading(false);
         }

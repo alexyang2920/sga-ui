@@ -1,4 +1,4 @@
-import { Divider, Image, Text } from "@mantine/core";
+import { Image, Text } from "@mantine/core";
 
 import sga_wechat_image from "./assets/SGA_wechat_group.webp";
 
