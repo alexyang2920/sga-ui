@@ -1,4 +1,4 @@
-import { Menu, rem, Avatar } from "@mantine/core";
+import { Menu, rem, Avatar, Box } from "@mantine/core";
 import {
     IconSettings,
     IconDashboard,
@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { RoleEnum } from "../api/schemas";
+import { useMemo } from "react";
 
 const getInitialName = (name: string) => {
     let parts = name.split(" ");
@@ -18,47 +19,24 @@ const getInitialName = (name: string) => {
     return name.substring(0, 2);
 };
 
-export function AvatarMenu() {
+interface AvatarMenuProps {
+    closeDrawer: () => void;
+}
+
+export function AvatarMenu({ closeDrawer } : AvatarMenuProps) {
     const navigate = useNavigate();
     const { logout, user, hasRole } = useAuth();
-    return (
-        <Menu
-            shadow="md"
-            width={200}
-            trigger="click-hover"
-            openDelay={100}
-            closeDelay={200}
-        >
-            <Menu.Target>
-                <Avatar color="blue" radius="xl" style={{ cursor: "pointer" }}>
-                    {getInitialName(user?.name ?? '')}
-                </Avatar>
-            </Menu.Target>
 
-            <Menu.Dropdown>
-                <Menu.Item
-                    leftSection={
-                        <IconSettings
-                            style={{ width: rem(14), height: rem(14) }}
-                        />
-                    }
-                >
+    const menuItems = useMemo(() => {
+        return (
+            <>
+                <Menu.Item leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />} >
                     Profile
                 </Menu.Item>
-                <Menu.Item
-                    leftSection={
-                        <IconAbc style={{ width: rem(14), height: rem(14) }} />
-                    }
-                >
+                <Menu.Item leftSection={<IconAbc style={{ width: rem(14), height: rem(14) }} />} >
                     Volunteer
                 </Menu.Item>
-                <Menu.Item
-                    leftSection={
-                        <IconSchool
-                            style={{ width: rem(14), height: rem(14) }}
-                        />
-                    }
-                >
+                <Menu.Item leftSection={<IconSchool style={{ width: rem(14), height: rem(14) }} />}>
                     Tutoring
                 </Menu.Item>
 
@@ -66,12 +44,9 @@ export function AvatarMenu() {
                     <>
                         <Menu.Divider />
                         <Menu.Item
-                            leftSection={
-                                <IconDashboard
-                                    style={{ width: rem(14), height: rem(14) }}
-                                />
-                            }
+                            leftSection={<IconDashboard style={{ width: rem(14), height: rem(14) }} />}
                             onClick={() => {
+                                closeDrawer();
                                 navigate("/dashboard");
                             }}
                         >
@@ -83,19 +58,45 @@ export function AvatarMenu() {
                 <Menu.Divider />
                 <Menu.Item
                     color="red"
-                    leftSection={
-                        <IconLogout
-                            style={{ width: rem(14), height: rem(14) }}
-                        />
-                    }
+                    leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}
                     onClick={() => {
+                        closeDrawer();
                         logout();
                         navigate("/", { replace: true });
                     }}
                 >
                     Sign out
                 </Menu.Item>
-            </Menu.Dropdown>
-        </Menu>
+            </>
+        )
+    }, [navigate, logout, hasRole, closeDrawer])
+
+    return (
+        <>
+            <Box visibleFrom="md">
+                <Menu
+                    shadow="md"
+                    width={200}
+                    trigger="click"
+                    openDelay={100}
+                    closeDelay={200}
+                >
+                    <Menu.Target>
+                        <Avatar color="blue" radius="xl" style={{ cursor: "pointer" }} visibleFrom="md">
+                            {getInitialName(user?.name ?? '')}
+                        </Avatar>
+                    </Menu.Target>
+
+                    <Menu.Dropdown visibleFrom="md">
+                        {menuItems}
+                    </Menu.Dropdown>
+                </Menu>
+            </Box>
+            <Box hiddenFrom="md">
+                <Menu>
+                    {menuItems}
+                </Menu>
+            </Box>
+        </>
     );
 }

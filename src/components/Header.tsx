@@ -158,7 +158,7 @@ export function AppHeader() {
 
                     <Group visibleFrom="md">
                         {isAuthenticated ? (
-                            <AvatarMenu />
+                            <AvatarMenu closeDrawer={closeDrawer} />
                         ) : (
                             <>
                                 <Button variant="default" onClick={handleLogin}>
@@ -220,7 +220,7 @@ export function AppHeader() {
 
                     <Group justify="center" grow pb="xl" px="md">
                         {isAuthenticated ? (
-                            <AvatarMenu />
+                            <AvatarMenu closeDrawer={closeDrawer} />
                         ) : (
                             <>
                                 <Button variant="default" onClick={handleLogin}>

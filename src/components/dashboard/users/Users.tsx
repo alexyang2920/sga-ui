@@ -1,44 +1,35 @@
 import cx from "clsx";
-import { useState } from "react";
-import { Table, Checkbox, ScrollArea, Group, Text, rem } from "@mantine/core";
+import { useEffect, useState, useMemo } from "react";
+import { Table, Checkbox, ScrollArea, Group, Text, rem, LoadingOverlay } from "@mantine/core";
 import classes from "./Users.module.css";
-import { User } from "./interfaces";
+import { ApiError, User } from "../../../api/schemas";
+import useApi from "../../../hooks/useApi";
+import { ErrorAlert } from '../../shared/ErrorAlert';
+import Loading from "../../shared/Loading";
 
-const data = [
-    {
-        id: 1,
-        name: "Robert Wolfkisser",
-        email: "rob_wolf@gmail.com",
-        role: "Admin"
-    },
-    {
-        id: 2,
-        name: "Jill Jailbreaker",
-        email: "jj@breaker.com",
-        role: "General"
-    },
-    {
-        id: 3,
-        name: "Henry Silkeater",
-        email: "henry@silkeater.io",
-        role: "Mentor"
-    },
-    {
-        id: 4,
-        name: "Bill Horsefighter",
-        email: "bhorsefighter@gmail.com",
-        role: "Volunteer"
-    },
-    {
-        id: 5,
-        name: "Jeremy Footviewer",
-        email: "jeremy@foot.dev",
-        role: "General"
-    }
-] as User[];
 
 export function DashboardUsers() {
     const [selection, setSelection] = useState<number[]>([]);
+
+    const { apiGet } = useApi();
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const [data, setData] = useState<User[]>([]);
+    const [error, setError] = useState<string>("");
+
+    useEffect(() => {
+        apiGet('/api/users')
+            .then((res) => {
+                setData(res);
+            })
+            .catch((error) => {
+                setError((error as ApiError).message);
+            })
+            .finally(() => {
+                setLoading(false);
+            })
+    }, [apiGet]);
+
 
     const toggleRow = (id: number) =>
         setSelection((current) =>
@@ -52,8 +43,9 @@ export function DashboardUsers() {
             current.length === data.length ? [] : data.map((item) => item.id)
         );
 
-    const rows = data.map((item) => {
+    const rows = useMemo(() => data.map((item) => {
         const selected = selection.includes(item.id);
+        const roleNames = item.roles.map(x => x.name).join(',');
         return (
             <Table.Tr
                 key={item.id}
@@ -73,13 +65,18 @@ export function DashboardUsers() {
                     </Group>
                 </Table.Td>
                 <Table.Td>{item.email}</Table.Td>
-                <Table.Td>{item.role}</Table.Td>
+                <Table.Td>{roleNames}</Table.Td>
             </Table.Tr>
         );
-    });
+    }), [data]);
+
+    if (loading) {
+        return <Loading visible={loading} />;
+    }
 
     return (
         <ScrollArea>
+            {error && <ErrorAlert error={error} />}
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>
                     <Table.Tr>

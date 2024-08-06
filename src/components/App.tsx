@@ -1,4 +1,4 @@
-import { Container, LoadingOverlay } from '@mantine/core';
+import { Container } from '@mantine/core';
 import { AppHeader } from './Header';
 import { AppFooter } from './Footer';
 import { Route, Routes } from 'react-router-dom';
@@ -13,6 +13,7 @@ import useAuth from '../hooks/useAuth';
 import useApi from '../hooks/useApi';
 import { useEffect, useState } from 'react';
 import { ProtectedRoute } from './ProtectedRoute';
+import Loading from './shared/Loading';
 
 export default function App() {
     const { token, logout, setUser } = useAuth();
@@ -41,7 +42,7 @@ export default function App() {
     }, [token, logout, setUser]);
 
     if (isLoading) {
-        return <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />;
+        return <Loading visible={isLoading} />;
     }
 
     return (
