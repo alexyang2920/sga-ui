@@ -1,4 +1,4 @@
-import { Anchor, Table, Text } from "@mantine/core";
+import { Anchor, Table } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { mockFormsData } from "./MockData";
 

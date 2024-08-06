@@ -14,8 +14,8 @@ import {
     Notification,
     rem
 } from "@mantine/core";
-import { IconX, IconCheck } from '@tabler/icons-react';
-import { signup } from '../../../api/auth';
+import { IconX, IconCheck } from "@tabler/icons-react";
+import { signup } from "../../../api/auth";
 import { useCallback, useState } from "react";
 
 function SignupForm(props: PaperProps) {
@@ -61,7 +61,7 @@ function SignupForm(props: PaperProps) {
     }, [navigate]);
 
     const xIcon = <IconX style={{ width: rem(20), height: rem(20) }} />;
-    const checkIcon = <IconCheck style={{ width: rem(20), height: rem(20) }} />
+    const checkIcon = <IconCheck style={{ width: rem(20), height: rem(20) }} />;
 
     return (
         <Paper
@@ -151,12 +151,22 @@ function SignupForm(props: PaperProps) {
                     </Button>
                 </Group>
                 {error && (
-                    <Notification icon={xIcon} color="red" title="Bummer!" onClose={() => setError(null)}>
+                    <Notification
+                        icon={xIcon}
+                        color="red"
+                        title="Bummer!"
+                        onClose={() => setError(null)}
+                    >
                         {error}
                     </Notification>
                 )}
                 {success && (
-                    <Notification title="Success" icon={checkIcon} color="teal" onClose={() => setSuccess(false)}>
+                    <Notification
+                        title="Success"
+                        icon={checkIcon}
+                        color="teal"
+                        onClose={() => setSuccess(false)}
+                    >
                         You have successfully signed up.
                     </Notification>
                 )}

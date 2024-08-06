@@ -9,7 +9,7 @@ import {
     Stack,
     Text
 } from "@mantine/core";
-import { CheckBoxAnswer, CheckBoxQuestion, SGAForm } from "./interfaces";
+import { SGAForm } from "./interfaces";
 import { mockFormsData } from "./MockData";
 
 export function DashboardForm() {
@@ -96,27 +96,5 @@ export function DashboardForm() {
             )}
             {!form && <Text>Loading...</Text>}
         </>
-    );
-}
-
-function renderCheckBoxQuestion(question: CheckBoxQuestion) {
-    const [answer, setAnswer] = useState<CheckBoxAnswer>();
-
-    return (
-        <Stack>
-            <Checkbox onChange={() => {}} label="Default checkbox" />
-            <Checkbox
-                onChange={() => {}}
-                indeterminate
-                label="Indeterminate checkbox"
-            />
-            <Checkbox checked onChange={() => {}} label="Checked checkbox" />
-            <Checkbox
-                checked
-                variant="outline"
-                onChange={() => {}}
-                label="Outline checked checkbox"
-            />
-        </Stack>
     );
 }

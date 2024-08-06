@@ -1,14 +1,6 @@
 import cx from "clsx";
 import { useState } from "react";
-import {
-    Table,
-    Checkbox,
-    ScrollArea,
-    Group,
-    Avatar,
-    Text,
-    rem
-} from "@mantine/core";
+import { Table, Checkbox, ScrollArea, Text, rem } from "@mantine/core";
 import classes from "./Events.module.css";
 
 const data = [

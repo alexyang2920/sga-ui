@@ -10,12 +10,12 @@ import {
     Anchor,
     Stack,
     Notification,
-    rem,
+    rem
 } from "@mantine/core";
-import { notifications } from '@mantine/notifications';
-import { IconX, IconCheck } from '@tabler/icons-react';
-import { useCallback, useState } from 'react';
-import { signin } from '../../../api/auth';
+import { notifications } from "@mantine/notifications";
+import { IconX, IconCheck } from "@tabler/icons-react";
+import { useCallback, useState } from "react";
+import { signin } from "../../../api/auth";
 import useAuth from "../../../hooks/useAuth";
 import { ApiError } from "../../../api/schemas";
 
@@ -27,43 +27,47 @@ function LoginForm(props: PaperProps) {
     const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
-        'email': '',
-        'password': '',
+        email: "",
+        password: ""
     });
 
     const handleRedirect = useCallback(() => {
         navigate("/signup", { replace: true });
     }, [navigate]);
 
-    const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setError(null);
-        setLoading(true);
-        try {
-            const { access_token } = await signin(formData);
-            login(access_token);
-            notifications.show({
-                title: 'Success!',
-                message: 'You’ve logged in successfully.',
-                color: 'green',
-                icon: <IconCheck size={16} />,
-                autoClose: 5000,
-              });
-            navigate("/", {replace: true});
-        } catch (error) {
-            setError((error as ApiError).message ?? '');
-        } finally {
-            setLoading(false);
-        }
-    }, [formData, navigate]);
+    const handleSubmit = useCallback(
+        async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            setError(null);
+            setLoading(true);
+            try {
+                const { access_token } = await signin(formData);
+                login(access_token);
+                notifications.show({
+                    title: "Success!",
+                    message: "You’ve logged in successfully.",
+                    color: "green",
+                    icon: <IconCheck size={16} />,
+                    autoClose: 5000
+                });
+                navigate("/", { replace: true });
+            } catch (error) {
+                setError((error as ApiError).message ?? "");
+            } finally {
+                setLoading(false);
+            }
+        },
+        [formData, navigate]
+    );
 
-    const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        setFormData({
-            ...formData,
-            [field]: value,
-        });
-    };
+    const handleChange =
+        (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+            const { value } = event.target;
+            setFormData({
+                ...formData,
+                [field]: value
+            });
+        };
 
     const xIcon = <IconX style={{ width: rem(20), height: rem(20) }} />;
 
@@ -116,11 +120,15 @@ function LoginForm(props: PaperProps) {
                 </Group>
 
                 {error && (
-                    <Notification icon={xIcon} color="red" title="Bummer!" onClose={() => setError(null)}>
+                    <Notification
+                        icon={xIcon}
+                        color="red"
+                        title="Bummer!"
+                        onClose={() => setError(null)}
+                    >
                         {error}
                     </Notification>
                 )}
-
             </form>
         </Paper>
     );

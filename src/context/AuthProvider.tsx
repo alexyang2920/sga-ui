@@ -1,5 +1,11 @@
-import React, { useState, ReactNode, createContext, useEffect, useCallback, useMemo } from 'react';
-import { RoleEnum, User } from '../api/schemas';
+import React, {
+    useState,
+    ReactNode,
+    createContext,
+    useCallback,
+    useMemo
+} from "react";
+import { RoleEnum, User } from "../api/schemas";
 
 export interface AuthContextType {
     token: string | null;
@@ -18,7 +24,7 @@ export const AuthContext = createContext<AuthContextType>({
     login: () => {},
     logout: () => {},
     hasRole: () => false,
-    setUser: () => {},
+    setUser: () => {}
 });
 
 interface AuthProviderProps {
@@ -31,7 +37,7 @@ function getAccessToken(): string | null {
     let token = localStorage.getItem(AUTH_KEY);
     if (token !== null) {
         token = token.trim();
-        token = token === '' ? null : token;
+        token = token === "" ? null : token;
     }
     return token;
 }
@@ -46,23 +52,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }, []);
 
     const logout = useCallback(() => {
-        localStorage.setItem(AUTH_KEY, '');
+        localStorage.setItem(AUTH_KEY, "");
         setToken(null);
         setUser(null);
     }, []);
 
     const roleNames = useMemo(() => {
-        return user ? new Set(user.roles.map(x => x.name)) : new Set();
+        return user ? new Set(user.roles.map((x) => x.name)) : new Set();
     }, [user?.roles]);
 
-    const hasRole = useCallback((roleName: RoleEnum) => {
-        return roleNames.has(roleName);
-    }, [roleNames]);
+    const hasRole = useCallback(
+        (roleName: RoleEnum) => {
+            return roleNames.has(roleName);
+        },
+        [roleNames]
+    );
 
     const isAuthenticated = token !== null;
 
     return (
-        <AuthContext.Provider value={{ token, user, isAuthenticated, login, logout, hasRole, setUser }}>
+        <AuthContext.Provider
+            value={{
+                token,
+                user,
+                isAuthenticated,
+                login,
+                logout,
+                hasRole,
+                setUser
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

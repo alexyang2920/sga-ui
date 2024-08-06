@@ -23,20 +23,36 @@ interface AvatarMenuProps {
     closeDrawer: () => void;
 }
 
-export function AvatarMenu({ closeDrawer } : AvatarMenuProps) {
+export function AvatarMenu({ closeDrawer }: AvatarMenuProps) {
     const navigate = useNavigate();
     const { logout, user, hasRole } = useAuth();
 
     const menuItems = useMemo(() => {
         return (
             <>
-                <Menu.Item leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />} >
+                <Menu.Item
+                    leftSection={
+                        <IconSettings
+                            style={{ width: rem(14), height: rem(14) }}
+                        />
+                    }
+                >
                     Profile
                 </Menu.Item>
-                <Menu.Item leftSection={<IconAbc style={{ width: rem(14), height: rem(14) }} />} >
+                <Menu.Item
+                    leftSection={
+                        <IconAbc style={{ width: rem(14), height: rem(14) }} />
+                    }
+                >
                     Volunteer
                 </Menu.Item>
-                <Menu.Item leftSection={<IconSchool style={{ width: rem(14), height: rem(14) }} />}>
+                <Menu.Item
+                    leftSection={
+                        <IconSchool
+                            style={{ width: rem(14), height: rem(14) }}
+                        />
+                    }
+                >
                     Tutoring
                 </Menu.Item>
 
@@ -44,7 +60,11 @@ export function AvatarMenu({ closeDrawer } : AvatarMenuProps) {
                     <>
                         <Menu.Divider />
                         <Menu.Item
-                            leftSection={<IconDashboard style={{ width: rem(14), height: rem(14) }} />}
+                            leftSection={
+                                <IconDashboard
+                                    style={{ width: rem(14), height: rem(14) }}
+                                />
+                            }
                             onClick={() => {
                                 closeDrawer();
                                 navigate("/dashboard");
@@ -58,7 +78,11 @@ export function AvatarMenu({ closeDrawer } : AvatarMenuProps) {
                 <Menu.Divider />
                 <Menu.Item
                     color="red"
-                    leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}
+                    leftSection={
+                        <IconLogout
+                            style={{ width: rem(14), height: rem(14) }}
+                        />
+                    }
                     onClick={() => {
                         closeDrawer();
                         logout();
@@ -68,8 +92,8 @@ export function AvatarMenu({ closeDrawer } : AvatarMenuProps) {
                     Sign out
                 </Menu.Item>
             </>
-        )
-    }, [navigate, logout, hasRole, closeDrawer])
+        );
+    }, [navigate, logout, hasRole, closeDrawer]);
 
     return (
         <>
@@ -82,20 +106,21 @@ export function AvatarMenu({ closeDrawer } : AvatarMenuProps) {
                     closeDelay={200}
                 >
                     <Menu.Target>
-                        <Avatar color="blue" radius="xl" style={{ cursor: "pointer" }} visibleFrom="md">
-                            {getInitialName(user?.name ?? '')}
+                        <Avatar
+                            color="blue"
+                            radius="xl"
+                            style={{ cursor: "pointer" }}
+                            visibleFrom="md"
+                        >
+                            {getInitialName(user?.name ?? "")}
                         </Avatar>
                     </Menu.Target>
 
-                    <Menu.Dropdown visibleFrom="md">
-                        {menuItems}
-                    </Menu.Dropdown>
+                    <Menu.Dropdown visibleFrom="md">{menuItems}</Menu.Dropdown>
                 </Menu>
             </Box>
             <Box hiddenFrom="md">
-                <Menu>
-                    {menuItems}
-                </Menu>
+                <Menu>{menuItems}</Menu>
             </Box>
         </>
     );

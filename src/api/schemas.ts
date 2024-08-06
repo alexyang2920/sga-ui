@@ -20,5 +20,5 @@ export enum RoleEnum {
     Admin = "Admin",
     User = "User",
     Mentor = "Mentor",
-    Volunteer = "Volunteer",
+    Volunteer = "Volunteer"
 }

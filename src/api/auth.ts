@@ -18,7 +18,7 @@ export async function signup(payload: SignupPayload) {
 
 export async function signin(payload: SigninPayload) {
     const data = new FormData();
-    data.append('username', payload.email);
-    data.append('password', payload.password);
-    return await doFormPost('/api/auth/token', data);
+    data.append("username", payload.email);
+    data.append("password", payload.password);
+    return await doFormPost("/api/auth/token", data);
 }
