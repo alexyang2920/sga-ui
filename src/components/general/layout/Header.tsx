@@ -16,7 +16,6 @@ import {
     ScrollArea,
     rem,
     useMantineTheme,
-    Image,
     Anchor
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
