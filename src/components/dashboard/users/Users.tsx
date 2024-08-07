@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { Table, Checkbox, Group, Text, rem } from "@mantine/core";
 import classes from "./Users.module.css";
 import { ApiError, User } from "../../../api/schemas";
@@ -29,17 +29,19 @@ export function DashboardUsers() {
             });
     }, [apiGet]);
 
-    const toggleRow = (id: number) =>
+    const toggleRow = useCallback((id: number) => {
         setSelection((current) =>
             current.includes(id)
                 ? current.filter((item) => item !== id)
                 : [...current, id]
-        );
+        )
+    }, []);
 
-    const toggleAll = () =>
+    const toggleAll = useCallback(() => {
         setSelection((current) =>
             current.length === data.length ? [] : data.map((item) => item.id)
         );
+    }, []);
 
     const rows = useMemo(
         () =>
@@ -69,7 +71,7 @@ export function DashboardUsers() {
                     </Table.Tr>
                 );
             }),
-        [data]
+        [data, selection]
     );
 
     if (loading) {
