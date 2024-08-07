@@ -1,17 +1,19 @@
+import { useCallback } from 'react';
 import useAuth from "./useAuth";
 import { apiFetch } from "../api/common";
 
 const useApi = () => {
     const { token } = useAuth();
 
-    const headers = {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` })
-    };
-
-    const apiGet = async (url: string) => {
-        return await apiFetch(url, "GET", headers);
-    };
+    const apiGet = useCallback(async (url: string) => {
+        return await apiFetch(
+            url,
+            "GET",
+            {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` })
+            });
+    }, [token]);
 
     return { apiGet };
 };

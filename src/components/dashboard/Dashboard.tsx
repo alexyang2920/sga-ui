@@ -6,6 +6,7 @@ import { DashboardEvents } from "./events/Events";
 import { DashboardForm } from "./forms/Form";
 import { DashboardForms } from "./forms/Forms";
 import { DashboardHome } from "./DashboardHome";
+import { DashboardRoles } from "./roles/Roles";
 
 export function Dashboard() {
     return (
@@ -24,6 +25,7 @@ export function Dashboard() {
                     <Route path="/forms/:id" element={<DashboardForm />} />
                     <Route path="/events" element={<DashboardEvents />} />
                     <Route path="/users" element={<DashboardUsers />} />
+                    <Route path="/roles" element={<DashboardRoles />} />
                 </Routes>
             </Box>
         </Paper>
