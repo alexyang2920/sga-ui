@@ -28,7 +28,7 @@ import {
 } from "@tabler/icons-react";
 import classes from "./Header.module.css";
 
-import logo from "./logo.webp";
+import SGALogo from "../../shared/SGALogo";
 import { AvatarMenu } from "./AvatarMenu";
 import useAuth from "../../../hooks/useAuth";
 import { ReactNode, useCallback, useMemo } from "react";
@@ -128,7 +128,7 @@ export function AppHeader() {
         <Box pb={20}>
             <header className={classes.header}>
                 <Group justify="space-between" h="100%">
-                    <Image src={logo} alt="Logo" width={40} height={40} />
+                    <SGALogo />
 
                     <Group h="100%" gap={0} visibleFrom="md">
                         <a href="#" className={classes.link} onClick={handleNavigate("/")}>
