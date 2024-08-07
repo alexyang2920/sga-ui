@@ -27,7 +27,7 @@ function getActiveLable(pathname: string) {
 }
 
 interface NavBarProps {
-    handleClose: () => {};
+    handleClose: () => void;
 }
 
 export function NavBar({handleClose}: NavBarProps) {

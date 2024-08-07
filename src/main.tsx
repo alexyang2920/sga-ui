@@ -2,6 +2,7 @@
 // All packages except `@mantine/hooks` require styles imports
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import '@mantine/tiptap/styles.css';
 
 import React from "react";
 import ReactDOM from "react-dom/client";

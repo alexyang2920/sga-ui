@@ -1,7 +1,10 @@
 import cx from "clsx";
 import { useState } from "react";
-import { Table, Checkbox, ScrollArea, Text, rem } from "@mantine/core";
+import { Table, Checkbox, Text, rem, Group, Button, ActionIcon } from "@mantine/core";
+import { useDisclosure } from '@mantine/hooks';
 import classes from "./Events.module.css";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { EventModal } from "./EventModal";
 
 const data = [
     {
@@ -37,6 +40,8 @@ const data = [
 ];
 
 export function DashboardEvents() {
+    const [modalOpened, { open: openModal, close: closeModal } ] = useDisclosure(false);
+
     const [selection, setSelection] = useState<string[]>([]);
     const toggleRow = (id: string) =>
         setSelection((current) =>
@@ -48,6 +53,8 @@ export function DashboardEvents() {
         setSelection((current) =>
             current.length === data.length ? [] : data.map((item) => item.id)
         );
+
+    const handleSubmit = () => {};
 
     const rows = data.map((item) => {
         const selected = selection.includes(item.id);
@@ -69,6 +76,16 @@ export function DashboardEvents() {
                 </Table.Td>
                 <Table.Td>{item.beginDate}</Table.Td>
                 <Table.Td>{item.endDate}</Table.Td>
+                <Table.Td>
+                    <Group gap="xs">
+                        <ActionIcon color="gray" variant="transparent">
+                            <IconEdit onClick={() => {}} />
+                        </ActionIcon>
+                        <ActionIcon color="red" variant="transparent">
+                            <IconTrash onClick={() => {}} />
+                        </ActionIcon>
+                    </Group>
+                </Table.Td>
             </Table.Tr>
         );
     });
@@ -76,6 +93,14 @@ export function DashboardEvents() {
     return (
         <>
             <Text fw={600} pb={"md"}>Events</Text>
+            <EventModal close={closeModal} title="Create New Event" opened={modalOpened} onSubmit={handleSubmit} />
+            <Group>
+                <Button leftSection={<IconEdit size={14} />} variant="default" onClick={() => {
+                    openModal();
+                }}>
+                    Create New Event
+                </Button>
+            </Group>
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>
                     <Table.Tr>
@@ -92,6 +117,7 @@ export function DashboardEvents() {
                         <Table.Th>Title</Table.Th>
                         <Table.Th>Begin Date</Table.Th>
                         <Table.Th>End Date</Table.Th>
+                        <Table.Th>Actions</Table.Th>
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>{rows}</Table.Tbody>
