@@ -7,8 +7,8 @@ import {
     IconLogout
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import { RoleEnum } from "../api/schemas";
+import useAuth from "../../../hooks/useAuth";
+import { RoleEnum } from "../../../api/schemas";
 import { useMemo } from "react";
 
 const getInitialName = (name: string) => {

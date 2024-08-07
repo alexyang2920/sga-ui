@@ -30,7 +30,7 @@ import classes from "./Header.module.css";
 
 import logo from "./logo.webp";
 import { AvatarMenu } from "./AvatarMenu";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import { ReactNode, useCallback, useMemo } from "react";
 
 const resourcesLinkData = [
