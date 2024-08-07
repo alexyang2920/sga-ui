@@ -6,7 +6,6 @@ import {
     Text,
     Paper,
     Group,
-    PaperProps,
     Button,
     Checkbox,
     Anchor,
@@ -18,7 +17,7 @@ import { IconX, IconCheck } from "@tabler/icons-react";
 import { signup } from "../../../api/auth";
 import { useCallback, useState } from "react";
 
-function SignupForm(props: PaperProps) {
+function SignupForm() {
     const navigate = useNavigate();
 
     const [success, setSuccess] = useState(false);
@@ -68,8 +67,6 @@ function SignupForm(props: PaperProps) {
             radius="md"
             p="xl"
             withBorder
-            {...props}
-            style={{ maxWidth: "800px", minWidth: "400px" }}
         >
             <Text size="lg" fw={500} style={{ paddingBottom: "20px" }}>
                 Sign up

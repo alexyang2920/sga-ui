@@ -5,7 +5,6 @@ import {
     Text,
     Paper,
     Group,
-    PaperProps,
     Button,
     Anchor,
     Stack,
@@ -19,7 +18,7 @@ import { signin } from "../../../api/auth";
 import useAuth from "../../../hooks/useAuth";
 import { ApiError } from "../../../api/schemas";
 
-function LoginForm(props: PaperProps) {
+function LoginForm() {
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -76,8 +75,6 @@ function LoginForm(props: PaperProps) {
             radius="md"
             p="xl"
             withBorder
-            {...props}
-            style={{ maxWidth: "800px", minWidth: "400px" }}
         >
             <Text size="lg" fw={500} style={{ paddingBottom: "20px" }}>
                 Login
