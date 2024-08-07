@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Table, ScrollArea } from "@mantine/core";
+import { Table, Text } from "@mantine/core";
 import { ApiError, Role } from "../../../api/schemas";
 import useApi from "../../../hooks/useApi";
 import { ErrorAlert } from "../../shared/ErrorAlert";
@@ -41,7 +41,8 @@ export function DashboardRoles() {
     }
 
     return (
-        <ScrollArea>
+        <>
+            <Text fw={600} pb={"md"}>Roles</Text>
             {error && <ErrorAlert error={error} />}
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>
@@ -52,6 +53,6 @@ export function DashboardRoles() {
                 </Table.Thead>
                 <Table.Tbody>{rows}</Table.Tbody>
             </Table>
-        </ScrollArea>
+        </>
     );
 }

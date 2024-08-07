@@ -1,6 +1,6 @@
 import cx from "clsx";
 import { useEffect, useState, useMemo } from "react";
-import { Table, Checkbox, ScrollArea, Group, Text, rem } from "@mantine/core";
+import { Table, Checkbox, Group, Text, rem } from "@mantine/core";
 import classes from "./Users.module.css";
 import { ApiError, User } from "../../../api/schemas";
 import useApi from "../../../hooks/useApi";
@@ -77,7 +77,8 @@ export function DashboardUsers() {
     }
 
     return (
-        <ScrollArea>
+        <>
+            <Text fw={600} pb={"md"} >Users</Text>
             {error && <ErrorAlert error={error} />}
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>
@@ -99,6 +100,6 @@ export function DashboardUsers() {
                 </Table.Thead>
                 <Table.Tbody>{rows}</Table.Tbody>
             </Table>
-        </ScrollArea>
+        </>
     );
 }

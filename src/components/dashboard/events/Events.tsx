@@ -74,7 +74,8 @@ export function DashboardEvents() {
     });
 
     return (
-        <ScrollArea>
+        <>
+            <Text fw={600} pb={"md"}>Events</Text>
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>
                     <Table.Tr>
@@ -95,6 +96,6 @@ export function DashboardEvents() {
                 </Table.Thead>
                 <Table.Tbody>{rows}</Table.Tbody>
             </Table>
-        </ScrollArea>
+        </>
     );
 }

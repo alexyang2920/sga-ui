@@ -3,15 +3,20 @@ import { useDisclosure } from '@mantine/hooks';
 
 import SGALogo from "../../shared/SGALogo";
 import { NavBar } from './NavBar';
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 
 interface DashboardLayoutProps {
     children: ReactNode;
 }
 
 export const DashboardLayout : React.FC<DashboardLayoutProps> = ({children}) => {
-    const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-    const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+    const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure();
+    const [desktopOpened, { toggle: toggleDesktop, close: closeDesktop }] = useDisclosure(true);
+
+    const handleClose = useCallback(() => {
+        closeMobile();
+        closeDesktop();
+    }, [closeMobile, closeDesktop])
 
     return (
         <AppShell
@@ -31,7 +36,7 @@ export const DashboardLayout : React.FC<DashboardLayoutProps> = ({children}) => 
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar p="md">
-                <NavBar />
+                <NavBar handleClose={handleClose} />
             </AppShell.Navbar>
             <AppShell.Main>
                 {children}

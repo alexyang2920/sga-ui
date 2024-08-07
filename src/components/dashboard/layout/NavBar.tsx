@@ -26,7 +26,11 @@ function getActiveLable(pathname: string) {
     return names.length >= 3 ? names[2] : "home";
 }
 
-export function NavBar() {
+interface NavBarProps {
+    handleClose: () => {};
+}
+
+export function NavBar({handleClose}: NavBarProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const { logout } = useAuth();
@@ -35,9 +39,10 @@ export function NavBar() {
 
     const handleClick = useCallback((link: string) => {
         return () => {
+            handleClose();
             navigate(link);
         };
-    }, [navigate]);
+    }, [navigate, handleClose]);
 
     const handleNavigate = useCallback((link: string) => {
         return (event: React.MouseEvent<HTMLAnchorElement>) => {
