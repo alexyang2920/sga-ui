@@ -31,6 +31,7 @@ import classes from "./Header.module.css";
 import logo from "./logo.webp";
 import { AvatarMenu } from "./AvatarMenu";
 import useAuth from "../hooks/useAuth";
+import { ReactNode, useCallback, useMemo } from "react";
 
 const resourcesLinkData = [
     {
@@ -60,44 +61,68 @@ const resourcesLinkData = [
 ];
 
 export function AppHeader() {
-    const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
-    const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
-        useDisclosure(false);
+    const { isAuthenticated } = useAuth();
+
+    const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
+
     const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
+
     const theme = useMantineTheme();
 
-    const links = resourcesLinkData.map((item) => (
-        <UnstyledButton className={classes.subLink} key={item.title}>
-            <Group wrap="nowrap" align="flex-start">
-                <ThemeIcon size={34} variant="default" radius="md">
-                    <item.icon
-                        style={{ width: rem(22), height: rem(22) }}
-                        color={theme.colors.blue[6]}
-                    />
-                </ThemeIcon>
-                <div>
-                    <Text size="sm" fw={500}>
-                        <Anchor href={item.link}>{item.title}</Anchor>
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                        {item.description}
-                    </Text>
-                </div>
-            </Group>
-        </UnstyledButton>
-    ));
+    const handleButton = useCallback((href: string) => {
+        return () => {
+            closeDrawer();
+            navigate(href);
+        }
+    }, [closeDrawer, navigate]);
 
-    const handleLogin = () => {
-        closeDrawer();
-        navigate("/login");
-    };
+    const handleNavigate = useCallback((href: string) => {
+        return (event: React.MouseEvent<HTMLAnchorElement>) => {
+            closeDrawer();
+            event.preventDefault();
+            navigate(href);
+        }
+    }, [closeDrawer, navigate]);
 
-    const handleSignup = () => {
-        closeDrawer();
-        navigate("/signup");
-    };
+    const links = useMemo(() => {
+        return resourcesLinkData.map((item) => (
+            <UnstyledButton className={classes.subLink} key={item.title}>
+                <Group wrap="nowrap" align="flex-start">
+                    <ThemeIcon size={34} variant="default" radius="md">
+                        <item.icon
+                            style={{ width: rem(22), height: rem(22) }}
+                            color={theme.colors.blue[6]}
+                        />
+                    </ThemeIcon>
+                    <div>
+                        <Text size="sm" fw={500}>
+                            <Anchor onClick={handleButton(item.link)}>
+                                {item.title}
+                            </Anchor>
+                        </Text>
+                        <Text size="xs" c="dimmed">
+                            {item.description}
+                        </Text>
+                    </div>
+                </Group>
+            </UnstyledButton>
+        ));
+    }, [theme, handleButton]);
+
+    const authButtonsSection: ReactNode = useMemo(() => {
+        return isAuthenticated ? (
+            <AvatarMenu closeDrawer={closeDrawer} />
+        ) : (
+            <>
+                <Button variant="default" onClick={handleButton('/login')}>
+                    Log in
+                </Button>
+                <Button onClick={handleButton('/signup')}>Sign up</Button>
+            </>
+        );
+    }, [isAuthenticated, handleButton, closeDrawer]);
 
     return (
         <Box pb={20}>
@@ -106,7 +131,7 @@ export function AppHeader() {
                     <Image src={logo} alt="Logo" width={40} height={40} />
 
                     <Group h="100%" gap={0} visibleFrom="md">
-                        <a href="/" className={classes.link}>
+                        <a href="#" className={classes.link} onClick={handleNavigate("/")}>
                             Home
                         </a>
                         <HoverCard
@@ -145,28 +170,21 @@ export function AppHeader() {
                                 </SimpleGrid>
                             </HoverCard.Dropdown>
                         </HoverCard>
-                        <a href="/student-board" className={classes.link}>
+                        <a href="#" className={classes.link} onClick={handleNavigate("/student-board")} >
                             Student Board
                         </a>
-                        <a href="/support-us" className={classes.link}>
+
+                        <a href="#" className={classes.link} onClick={handleNavigate("/support-us")} >
                             Support Us
                         </a>
-                        <a href="/about-us" className={classes.link}>
+
+                        <a href="#" className={classes.link} onClick={handleNavigate("/about-us")}>
                             About
                         </a>
                     </Group>
 
                     <Group visibleFrom="md">
-                        {isAuthenticated ? (
-                            <AvatarMenu closeDrawer={closeDrawer} />
-                        ) : (
-                            <>
-                                <Button variant="default" onClick={handleLogin}>
-                                    Log in
-                                </Button>
-                                <Button onClick={handleSignup}>Sign up</Button>
-                            </>
-                        )}
+                        {authButtonsSection}
                     </Group>
 
                     <Burger
@@ -182,16 +200,17 @@ export function AppHeader() {
                 onClose={closeDrawer}
                 size="100%"
                 padding="md"
-                title="Navigation"
+                title="Share And Grow"
                 hiddenFrom="md"
                 zIndex={1000000}
             >
                 <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
                     <Divider my="sm" />
 
-                    <a href="#" className={classes.link}>
+                    <a href="#" className={classes.link} onClick={handleNavigate("/")} >
                         Home
                     </a>
+
                     <UnstyledButton
                         className={classes.link}
                         onClick={toggleLinks}
@@ -207,28 +226,23 @@ export function AppHeader() {
                         </Center>
                     </UnstyledButton>
                     <Collapse in={linksOpened}>{links}</Collapse>
-                    <a href="/student-board" className={classes.link}>
+
+                    <a href="#" className={classes.link} onClick={handleNavigate("/student-board")} >
                         Student Board
                     </a>
-                    <a href="/support-us" className={classes.link}>
+
+                    <a href="#" className={classes.link} onClick={handleNavigate("/support-us")} >
                         Support Us
                     </a>
-                    <a href="/about-us" className={classes.link}>
+
+                    <a href="#" className={classes.link} onClick={handleNavigate("/about-us")}>
                         About
                     </a>
+
                     <Divider my="sm" />
 
                     <Group justify="center" grow pb="xl" px="md">
-                        {isAuthenticated ? (
-                            <AvatarMenu closeDrawer={closeDrawer} />
-                        ) : (
-                            <>
-                                <Button variant="default" onClick={handleLogin}>
-                                    Log in
-                                </Button>
-                                <Button onClick={handleSignup}>Sign up</Button>
-                            </>
-                        )}
+                        {authButtonsSection}
                     </Group>
                 </ScrollArea>
             </Drawer>
