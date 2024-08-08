@@ -12,13 +12,8 @@ import Loading from "../../shared/Loading";
 import { showExcellent, showOops } from "../../shared/notification";
 import { ConfirmDeletionModal } from "../../shared/ConfirmDeletionModal";
 
-function toDateString(dateValue: Date | null) {
-    return dateValue ? dateValue?.toISOString() ?? '' : '';
-}
+import { toDateString, toDateValue } from "../../shared/dateUtils";
 
-function toDateValue(dateString: string | null) {
-    return dateString ? new Date(dateString) : null;
-}
 
 export function DashboardEvents() {
     const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);

@@ -1,74 +1,53 @@
 import { Center, Container, Divider, Grid, Text } from "@mantine/core";
-import { SGAEventCard, SGAEvent } from "./SGAEventCard";
+import { SGAEventCard } from "./SGAEventCard";
+import { useState, useEffect, useMemo } from "react";
+import { SGAEvent } from "../../api/schemas";
+import useApi from "../../hooks/useApi";
+import { toDateValue } from "../shared/dateUtils";
+import Loading from "../shared/Loading";
+import { showOops } from "../shared/notification";
 
-const sgaEvents = [
-    {
-        id: 1,
-        title: "Mountains at night: 12 best locations to enjoy the view",
-        date: "September 12, 2022",
-        imageUrl:
-            "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-    },
-    {
-        id: 2,
-        title: "Mountains at night: 12 best locations to enjoy the view",
-        date: "September 12, 2022",
-        imageUrl:
-            "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-    },
-    {
-        id: 3,
-        title: "Mountains at night: 12 best locations to enjoy the view",
-        date: "September 12, 2022",
-        imageUrl:
-            "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-    },
-    {
-        id: 4,
-        title: "Mountains at night: 12 best locations to enjoy the view",
-        date: "September 12, 2022",
-        imageUrl:
-            "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-    },
-    {
-        id: 5,
-        title: "Mountains at night: 12 best locations to enjoy the view",
-        imageUrl:
-            "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-    },
-    {
-        id: 6,
-        title: "Mountains at night: 12 best locations to enjoy the view",
-        date: "September 12, 2022",
-        imageUrl:
-            "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-    },
-    {
-        id: 7,
-        title: "Mountains at night: 12 best locations to enjoy the view",
-        date: "September 12, 2022",
-        imageUrl:
-            "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-    },
-    {
-        id: 8,
-        title: "Mountains at night: 12 best locations to enjoy the view",
-        date: "September 12, 2022",
-        imageUrl:
-            "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-    }
-] as SGAEvent[];
 
 export function HomePage() {
-    const eventsColumns = sgaEvents.map((x) => {
-        return (
-            <Grid.Col span={{ md: 4, sm: 6, xs: 12 }} key={x.id}>
-                <Center>
-                    <SGAEventCard sgaEvent={x} />
-                </Center>
-            </Grid.Col>
-        );
-    });
+
+    const { apiGet } = useApi();
+
+    const [sgaEvents, setSgaEvents] = useState<SGAEvent[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        apiGet("/api/events")
+            .then((res: any[]) => {
+                setSgaEvents(res.map(x => ({
+                    ...x,
+                    start_date_time: toDateValue(x.start_date_time),
+                    end_date_time: toDateValue(x.end_date_time),
+                })));
+            })
+            .catch((error) => {
+                showOops({error: error});
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [apiGet]);
+
+    const eventsColumns = useMemo(() => {
+        return sgaEvents.map((x) => {
+            return (
+                <Grid.Col span={{ md: 4, sm: 6, xs: 12 }} key={x.id}>
+                    <Center>
+                        <SGAEventCard sgaEvent={x} />
+                    </Center>
+                </Grid.Col>
+            );
+        });
+    }, [sgaEvents]);
+
+    if (loading) {
+        return <Loading visible={loading} />;
+    }
+
     return (
         <Container fluid>
             <Text fw={600} size="lg">
