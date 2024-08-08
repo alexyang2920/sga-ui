@@ -10,6 +10,7 @@ import useApi from "../../../hooks/useApi";
 import { ErrorAlert } from "../../shared/ErrorAlert";
 import Loading from "../../shared/Loading";
 import { showExcellent, showOops } from "../../shared/notification";
+import { ConfirmDeletionModal } from "../../shared/ConfirmDeletionModal";
 
 function toDateString(dateValue: Date | null) {
     return dateValue?.toISOString() ?? '';
@@ -22,7 +23,9 @@ function toDateValue(dateString: string | null) {
 export function DashboardEvents() {
     const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
 
-    const { apiGet, apiPost } = useApi();
+    const [deletingEvent, setDeletingEvent] = useState<SGAEvent | null>(null);
+
+    const { apiGet, apiPost, apiDelete } = useApi();
 
     const [data, setData] = useState<SGAEvent[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -69,12 +72,30 @@ export function DashboardEvents() {
         };
         try {
             const event = await apiPost('/api/events', payload);
+            setData((current) => [...current, event]);
             closeModal();
-            showExcellent({message: `The event ${event.title} has been created successfully.`});
+            showExcellent({ message: `The event ${event.title} has been created successfully.` });
         } catch (error) {
-            showOops({error: error as ApiError});
+            showOops({ error: error as ApiError });
         }
     }, [apiPost, closeModal]);
+
+    const handleDelete = useCallback(async () => {
+        if (!deletingEvent) {
+            return;
+        }
+
+        try {
+            await apiDelete(`/api/events/${deletingEvent.id}`);
+            setDeletingEvent(null);
+            setData((current) => {
+                return current.filter(x => x.id !== deletingEvent.id);
+            });
+            showExcellent({ message: `The event ${deletingEvent.title} has been deleted successfully.` });
+        } catch (error) {
+            showOops({ error: error as ApiError });
+        }
+    }, [apiDelete, deletingEvent]);
 
     const rows = useMemo(() => {
         return data.map((item) => {
@@ -104,7 +125,7 @@ export function DashboardEvents() {
                                 <IconPencil style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => { }} />
                             </ActionIcon>
                             <ActionIcon color="red" variant="transparent">
-                                <IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => { }} />
+                                <IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => setDeletingEvent(item)} />
                             </ActionIcon>
                         </Group>
                     </Table.Td>
@@ -129,6 +150,13 @@ export function DashboardEvents() {
                     onSubmit={handleSubmit}
                 />
             )}
+            {deletingEvent && (
+                <ConfirmDeletionModal
+                    opened={deletingEvent !== null}
+                    close={() => { setDeletingEvent(null) }}
+                    handleDelete={handleDelete}
+                />)
+            }
             <Group>
                 <Button leftSection={<IconEdit size={14} />} variant="default" onClick={() => {
                     openModal();

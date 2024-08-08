@@ -28,7 +28,19 @@ const useApi = () => {
         });
     }, [token]);
 
-    return { apiGet, apiPost };
+    const apiDelete = useCallback(async (url: string) => {
+        return await apiFetch({
+            url,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` })
+            }
+        });
+    }, [token]);
+
+
+    return { apiGet, apiPost, apiDelete };
 };
 
 export default useApi;
