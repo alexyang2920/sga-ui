@@ -13,7 +13,7 @@ import { showExcellent, showOops } from "../../shared/notification";
 import { ConfirmDeletionModal } from "../../shared/ConfirmDeletionModal";
 
 function toDateString(dateValue: Date | null) {
-    return dateValue?.toISOString() ?? '';
+    return dateValue ? dateValue?.toISOString() ?? '' : '';
 }
 
 function toDateValue(dateString: string | null) {
@@ -24,8 +24,9 @@ export function DashboardEvents() {
     const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
 
     const [deletingEvent, setDeletingEvent] = useState<SGAEvent | null>(null);
+    const [editingEvent, setEditingEvent] = useState<SGAEvent | null>(null);
 
-    const { apiGet, apiPost, apiDelete } = useApi();
+    const { apiGet, apiPost, apiPut, apiDelete } = useApi();
 
     const [data, setData] = useState<SGAEvent[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -64,7 +65,7 @@ export function DashboardEvents() {
         });
     }, []);
 
-    const handleSubmit = useCallback(async (sgaEvent: SGAEventCreate) => {
+    const handleCreate = useCallback(async (sgaEvent: SGAEventCreate) => {
         const payload = {
             ...sgaEvent,
             start_date_time: sgaEvent.start_date_time?.toISOString() ?? null,
@@ -72,7 +73,11 @@ export function DashboardEvents() {
         };
         try {
             const event = await apiPost('/api/events', payload);
-            setData((current) => [...current, event]);
+            setData((current) => [...current, {
+                ...event,
+                start_date_time: toDateValue(event.start_date_time),
+                end_date_time: toDateValue(event.end_date_time),
+            }]);
             closeModal();
             showExcellent({ message: `The event ${event.title} has been created successfully.` });
         } catch (error) {
@@ -97,6 +102,33 @@ export function DashboardEvents() {
         }
     }, [apiDelete, deletingEvent]);
 
+    const handleEdit = useCallback(async (sgaEvent: SGAEventCreate) => {
+        if (!editingEvent) {
+            return;
+        }
+
+        const payload = {
+            ...sgaEvent,
+            start_date_time: sgaEvent.start_date_time?.toISOString() ?? null,
+            end_date_time: sgaEvent.end_date_time?.toISOString() ?? null
+        };
+
+        try {
+            const event = await apiPut(`/api/events/${editingEvent.id}`, payload);
+            setEditingEvent(null);
+            setData((current) => current.map(x => {
+                return x.id === event.id ? {
+                    ...event,
+                    start_date_time: toDateValue(event.start_date_time),
+                    end_date_time: toDateValue(event.end_date_time),
+                } : x;
+            }));
+            showExcellent({ message: `The event ${event.title} has been updated successfully.` });
+        } catch (error) {
+            showOops({ error: error as ApiError });
+        }
+    }, [apiPut, editingEvent]);
+
     const rows = useMemo(() => {
         return data.map((item) => {
             const selected = selection.includes(item.id);
@@ -111,6 +143,7 @@ export function DashboardEvents() {
                             onChange={() => toggleRow(item.id)}
                         />
                     </Table.Td>
+                    <Table.Td>{item.id}</Table.Td>
                     <Table.Td>
                         <Text size="sm" fw={500}>
                             {item.title}
@@ -122,7 +155,7 @@ export function DashboardEvents() {
                     <Table.Td>
                         <Group gap={0} justify="flex-end">
                             <ActionIcon color="gray" variant="transparent">
-                                <IconPencil style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => { }} />
+                                <IconPencil style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => setEditingEvent(item)} />
                             </ActionIcon>
                             <ActionIcon color="red" variant="transparent">
                                 <IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => setDeletingEvent(item)} />
@@ -147,7 +180,16 @@ export function DashboardEvents() {
                     title="Create New Event"
                     opened={modalOpened}
                     close={closeModal}
-                    onSubmit={handleSubmit}
+                    onSubmit={handleCreate}
+                />
+            )}
+            {editingEvent && (
+                <EventModal
+                    title="Edit Event"
+                    opened={editingEvent != null}
+                    close={() => setEditingEvent(null)}
+                    selectedEvent={editingEvent}
+                    onSubmit={handleEdit}
                 />
             )}
             {deletingEvent && (
@@ -176,6 +218,7 @@ export function DashboardEvents() {
                                 }
                             />
                         </Table.Th>
+                        <Table.Th>ID</Table.Th>
                         <Table.Th>Title</Table.Th>
                         <Table.Th>Location</Table.Th>
                         <Table.Th>Start Date Time</Table.Th>

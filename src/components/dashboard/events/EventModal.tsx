@@ -1,17 +1,21 @@
 import { Button, Group, Modal, TextInput } from '@mantine/core';
 import { ContentEditor } from './ContentEditor';
-import type { SGAEventCreate } from '../../../api/schemas';
+import type { SGAEventCreate, SGAEvent } from '../../../api/schemas';
 import { useCallback, useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 
 interface EventModalProps {
     title: string;
+    selectedEvent?: SGAEvent | null;
     close: () => void;
     opened: boolean;
     onSubmit: (sgaEvent: SGAEventCreate) => void;
 }
 
-function initValues(): SGAEventCreate {
+function initValues(event?: SGAEvent | null): SGAEventCreate {
+    if (event) {
+        return {...event};
+    }
     return {
         title: '',
         content: '',
@@ -27,8 +31,8 @@ function initValues(): SGAEventCreate {
  * such that the editor can be recreated,
  * otherwise no way to clear the old text in the editor.
  */
-export function EventModal({ title, close, opened, onSubmit }: EventModalProps) {
-    const [sgaEvent, setSgaEvent] = useState<SGAEventCreate>(initValues());
+export function EventModal({ title, close, opened, onSubmit, selectedEvent }: EventModalProps) {
+    const [sgaEvent, setSgaEvent] = useState<SGAEventCreate>(initValues(selectedEvent));
 
     const handleInputChange = useCallback((field: string) => {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,6 +110,7 @@ export function EventModal({ title, close, opened, onSubmit }: EventModalProps) 
 
             <ContentEditor
                 label="Content"
+                initContent={sgaEvent?.content}
                 onContentUpdate={handleContentUpdate}
             />
 

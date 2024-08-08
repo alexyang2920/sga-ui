@@ -7,15 +7,20 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
+import { useState } from 'react';
 
 
 interface ContentEditorProps {
     label: string;
+    initContent?: string;
     onContentUpdate: (content: string) => void;
 }
 
 
-export function ContentEditor({ label, onContentUpdate }: ContentEditorProps) {
+export function ContentEditor({ label, onContentUpdate, initContent }: ContentEditorProps) {
+    // Make sure editor can only initialized for the first time it rendered.
+    const [initialEditorContent, _] = useState<string | null | undefined>(initContent);
+
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -26,11 +31,11 @@ export function ContentEditor({ label, onContentUpdate }: ContentEditorProps) {
             Highlight,
             TextAlign.configure({ types: ['heading', 'paragraph'] }),
         ],
-        content: '',
+        content: initialEditorContent,
         onUpdate(props) {
             onContentUpdate(props.editor.getHTML());
         },
-    }, [onContentUpdate]);
+    }, [onContentUpdate, initialEditorContent]);
 
     return (
         <>

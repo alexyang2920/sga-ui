@@ -28,6 +28,18 @@ const useApi = () => {
         });
     }, [token]);
 
+    const apiPut = useCallback(async (url: string, payload: Record<string, any>) => {
+        return await apiFetch({
+            url,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` })
+            },
+            payload,
+        });
+    }, [token]);
+
     const apiDelete = useCallback(async (url: string) => {
         return await apiFetch({
             url,
@@ -40,7 +52,7 @@ const useApi = () => {
     }, [token]);
 
 
-    return { apiGet, apiPost, apiDelete };
+    return { apiGet, apiPost, apiPut, apiDelete };
 };
 
 export default useApi;
