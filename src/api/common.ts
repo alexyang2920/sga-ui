@@ -1,11 +1,18 @@
 import { ApiError } from "./schemas";
 
-export async function apiFetch(
-    url: string,
-    method: string,
-    headers: Record<string, any>,
-    payload?: Record<string, any> | FormData
-) {
+interface FetchProps {
+    url: string;
+    method: string;
+    headers?: Record<string, any>;
+    payload?: Record<string, any> | FormData;
+}
+
+export async function apiFetch({
+    url,
+    method,
+    headers = {},
+    payload
+}: FetchProps) {
     const options = {
         method: method,
         headers: headers
@@ -27,7 +34,9 @@ export async function apiFetch(
             };
         }
 
-        return await response.json();
+        if (response.status !== 204) {
+            return await response.json();
+        }
     } catch (error) {
         // Handle network errors or other unexpected issues
         throw {
@@ -44,16 +53,29 @@ export async function doGet(url: string) {
     const headers = {
         "Content-Type": "application/json"
     };
-    return await apiFetch(url, "GET", headers);
+    return await apiFetch({
+        url,
+        method: "GET",
+        headers
+    });
 }
 
 export async function doPost(url: string, payload: Record<string, any>) {
     const headers = {
         "Content-Type": "application/json"
     };
-    return await apiFetch(url, "POST", headers, payload);
+    return await apiFetch({
+        url,
+        method: "POST",
+        headers,
+        payload
+    });
 }
 
-export async function doFormPost(url: string, data: FormData) {
-    return await apiFetch(url, "POST", {}, data);
+export async function doFormPost(url: string, payload: FormData) {
+    return await apiFetch({
+        url,
+        method: "POST",
+        payload
+    });
 }

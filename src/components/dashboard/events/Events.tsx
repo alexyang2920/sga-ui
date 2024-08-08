@@ -1,99 +1,134 @@
 import cx from "clsx";
-import { useState } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { Table, Checkbox, Text, rem, Group, Button, ActionIcon } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks';
-import classes from "./Events.module.css";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconPencil, IconTrash } from "@tabler/icons-react";
 import { EventModal } from "./EventModal";
+import { ApiError, SGAEvent, type SGAEventCreate } from "../../../api/schemas";
+import classes from "./Events.module.css";
+import useApi from "../../../hooks/useApi";
+import { ErrorAlert } from "../../shared/ErrorAlert";
+import Loading from "../../shared/Loading";
+import { showExcellent, showOops } from "../../shared/notification";
 
-const data = [
-    {
-        id: "1",
-        title: "Robert Wolfkisser",
-        beginDate: "2024-04-09",
-        endDate: "2024-04-10"
-    },
-    {
-        id: "2",
-        title: "Jill Jailbreaker",
-        beginDate: "2024-04-09",
-        endDate: "2024-04-10"
-    },
-    {
-        id: "3",
-        title: "Henry Silkeater",
-        beginDate: "2024-04-09",
-        endDate: "2024-04-10"
-    },
-    {
-        id: "4",
-        title: "Bill Horsefighter",
-        beginDate: "2024-04-09",
-        endDate: "2024-04-10"
-    },
-    {
-        id: "5",
-        title: "Jeremy Footviewer",
-        beginDate: "2024-04-09",
-        endDate: "2024-04-10"
-    }
-];
+function toDateString(dateValue: Date | null) {
+    return dateValue?.toISOString() ?? '';
+}
+
+function toDateValue(dateString: string | null) {
+    return dateString ? new Date(dateString) : null;
+}
 
 export function DashboardEvents() {
-    const [modalOpened, { open: openModal, close: closeModal } ] = useDisclosure(false);
+    const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
 
-    const [selection, setSelection] = useState<string[]>([]);
-    const toggleRow = (id: string) =>
-        setSelection((current) =>
-            current.includes(id)
+    const { apiGet, apiPost } = useApi();
+
+    const [data, setData] = useState<SGAEvent[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const [selection, setSelection] = useState<number[]>([]);
+
+    useEffect(() => {
+        apiGet("/api/events")
+            .then((res: any[]) => {
+                setData(res.map(x => ({
+                    ...x,
+                    start_date_time: toDateValue(x.start_date_time),
+                    end_date_time: toDateValue(x.end_date_time),
+                })));
+            })
+            .catch((error) => {
+                setError((error as ApiError).message);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [apiGet]);
+
+    const toggleRow = useCallback((id: number) => {
+        setSelection((current) => {
+            return current.includes(id)
                 ? current.filter((item) => item !== id)
                 : [...current, id]
-        );
-    const toggleAll = () =>
-        setSelection((current) =>
-            current.length === data.length ? [] : data.map((item) => item.id)
-        );
+        })
+    }, []);
 
-    const handleSubmit = () => {};
+    const toggleAll = useCallback(() => {
+        setSelection((current) => {
+            return current.length === data.length ? [] : data.map((item) => item.id);
+        });
+    }, []);
 
-    const rows = data.map((item) => {
-        const selected = selection.includes(item.id);
-        return (
-            <Table.Tr
-                key={item.id}
-                className={cx({ [classes.rowSelected]: selected })}
-            >
-                <Table.Td>
-                    <Checkbox
-                        checked={selection.includes(item.id)}
-                        onChange={() => toggleRow(item.id)}
-                    />
-                </Table.Td>
-                <Table.Td>
-                    <Text size="sm" fw={500}>
-                        {item.title}
-                    </Text>
-                </Table.Td>
-                <Table.Td>{item.beginDate}</Table.Td>
-                <Table.Td>{item.endDate}</Table.Td>
-                <Table.Td>
-                    <Group gap="xs">
-                        <ActionIcon color="gray" variant="transparent">
-                            <IconEdit onClick={() => {}} />
-                        </ActionIcon>
-                        <ActionIcon color="red" variant="transparent">
-                            <IconTrash onClick={() => {}} />
-                        </ActionIcon>
-                    </Group>
-                </Table.Td>
-            </Table.Tr>
-        );
-    });
+    const handleSubmit = useCallback(async (sgaEvent: SGAEventCreate) => {
+        const payload = {
+            ...sgaEvent,
+            start_date_time: sgaEvent.start_date_time?.toISOString() ?? null,
+            end_date_time: sgaEvent.end_date_time?.toISOString() ?? null
+        };
+        try {
+            const event = await apiPost('/api/events', payload);
+            closeModal();
+            showExcellent({message: `The event ${event.title} has been created successfully.`});
+        } catch (error) {
+            showOops({error: error as ApiError});
+        }
+    }, [apiPost, closeModal]);
+
+    const rows = useMemo(() => {
+        return data.map((item) => {
+            const selected = selection.includes(item.id);
+            return (
+                <Table.Tr
+                    key={item.id}
+                    className={cx({ [classes.rowSelected]: selected })}
+                >
+                    <Table.Td>
+                        <Checkbox
+                            checked={selection.includes(item.id)}
+                            onChange={() => toggleRow(item.id)}
+                        />
+                    </Table.Td>
+                    <Table.Td>
+                        <Text size="sm" fw={500}>
+                            {item.title}
+                        </Text>
+                    </Table.Td>
+                    <Table.Td>{item.location}</Table.Td>
+                    <Table.Td>{toDateString(item?.start_date_time)}</Table.Td>
+                    <Table.Td>{toDateString(item?.end_date_time)}</Table.Td>
+                    <Table.Td>
+                        <Group gap={0} justify="flex-end">
+                            <ActionIcon color="gray" variant="transparent">
+                                <IconPencil style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => { }} />
+                            </ActionIcon>
+                            <ActionIcon color="red" variant="transparent">
+                                <IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => { }} />
+                            </ActionIcon>
+                        </Group>
+                    </Table.Td>
+                </Table.Tr>
+            );
+        });
+    }, [selection, data]);
+
+    if (loading) {
+        return <Loading visible={loading} />;
+    }
 
     return (
         <>
             <Text fw={600} pb={"md"}>Events</Text>
-            <EventModal close={closeModal} title="Create New Event" opened={modalOpened} onSubmit={handleSubmit} />
+            {error && <ErrorAlert error={error} />}
+            {modalOpened && (
+                <EventModal
+                    title="Create New Event"
+                    opened={modalOpened}
+                    close={closeModal}
+                    onSubmit={handleSubmit}
+                />
+            )}
             <Group>
                 <Button leftSection={<IconEdit size={14} />} variant="default" onClick={() => {
                     openModal();
@@ -109,15 +144,15 @@ export function DashboardEvents() {
                                 onChange={toggleAll}
                                 checked={selection.length === data.length}
                                 indeterminate={
-                                    selection.length > 0 &&
-                                    selection.length !== data.length
+                                    selection.length > 0 && selection.length !== data.length
                                 }
                             />
                         </Table.Th>
                         <Table.Th>Title</Table.Th>
-                        <Table.Th>Begin Date</Table.Th>
-                        <Table.Th>End Date</Table.Th>
-                        <Table.Th>Actions</Table.Th>
+                        <Table.Th>Location</Table.Th>
+                        <Table.Th>Start Date Time</Table.Th>
+                        <Table.Th>End Date Time</Table.Th>
+                        <Table.Th></Table.Th>
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>{rows}</Table.Tbody>

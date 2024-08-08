@@ -22,3 +22,15 @@ export enum RoleEnum {
     Mentor = "Mentor",
     Volunteer = "Volunteer"
 }
+
+export interface SGAEvent {
+    id: number;
+    title: string;
+    location: string;
+    content: string;
+    image: string | null;
+    start_date_time: Date | null;
+    end_date_time: Date | null;
+}
+
+export type SGAEventCreate = Omit<SGAEvent, 'id'>;

@@ -8,12 +8,14 @@ import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 
+
 interface ContentEditorProps {
     label: string;
+    onContentUpdate: (content: string) => void;
 }
 
 
-export function ContentEditor({ label }: ContentEditorProps) {
+export function ContentEditor({ label, onContentUpdate }: ContentEditorProps) {
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -23,8 +25,12 @@ export function ContentEditor({ label }: ContentEditorProps) {
             SubScript,
             Highlight,
             TextAlign.configure({ types: ['heading', 'paragraph'] }),
-        ]
-    });
+        ],
+        content: '',
+        onUpdate(props) {
+            onContentUpdate(props.editor.getHTML());
+        },
+    }, [onContentUpdate]);
 
     return (
         <>
