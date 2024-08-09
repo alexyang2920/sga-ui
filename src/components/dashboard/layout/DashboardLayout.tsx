@@ -1,4 +1,4 @@
-import { AppShell, Burger, Group } from '@mantine/core';
+import { AppShell, Burger, Group, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import SGALogo from "../../shared/SGALogo";
@@ -29,10 +29,11 @@ export const DashboardLayout : React.FC<DashboardLayoutProps> = ({children}) => 
             padding="md"
         >
             <AppShell.Header>
-                <Group h="100%" px="md">
+                <Group h="100%" px="md" gap="xs">
                     <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
                     <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
                     <SGALogo />
+                    <Text fw={400}>Share and Grow</Text>
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar p="md">
