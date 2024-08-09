@@ -129,7 +129,7 @@ export function AppHeader() {
                 <Group justify="space-between" h="100%">
                     <Group gap="xs">
                         <SGALogo />
-                        <Text fw={400}>Share and Grow</Text>
+                        <Text fw={400} visibleFrom="xs">Share and Grow</Text>
                     </Group>
 
                     <Group h="100%" gap={0} visibleFrom="md">
