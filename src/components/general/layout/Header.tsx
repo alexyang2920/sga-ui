@@ -127,13 +127,9 @@ export function AppHeader() {
         <Box pb={20} style={{ position: 'sticky', top: 0, zIndex: 500}}>
             <header className={classes.header} style={{ background: '#FFFFFF' }}>
                 <Group justify="space-between" h="100%">
-                    <Group gap="xs" visibleFrom="xs">
+                    <Group gap="xs" h="100%">
                         <SGALogo />
-                        <Text fw={400} >Share and Grow</Text>
-                    </Group>
-
-                    <Group gap="xs" hiddenFrom="xs">
-                        <SGALogo />
+                        <Text fw={400} visibleFrom="xs" >Share and Grow</Text>
                     </Group>
 
                     <Group h="100%" gap={0} visibleFrom="md">
