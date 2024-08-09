@@ -1,7 +1,7 @@
 import { Container } from "@mantine/core";
 import { Routes, Route } from "react-router-dom";
 import { AboutUs } from "./AboutUs";
-import { HomePage } from "./HomePage";
+import { Home } from "./home/Home";
 import { NotFound } from "../shared/NotFound";
 import { SupportUs } from "./SupportUs";
 import { LoginPage } from "./auth/LoginPage";
@@ -25,7 +25,7 @@ export function General() {
             <AppHeader />
             <Container style={{ flex: 1, overflowY: "auto" }}>
                 <Routes>
-                    <Route path="/" element={<HomePage />} />
+                    <Route path="/" element={<Home />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<SignupPage />} />
                     <Route path="/about-us" element={<AboutUs />} />

@@ -1,14 +1,14 @@
-import { Center, Container, Divider, Grid, Text } from "@mantine/core";
-import { SGAEventCard } from "./SGAEventCard";
-import { useState, useEffect, useMemo } from "react";
-import { SGAEvent } from "../../api/schemas";
-import useApi from "../../hooks/useApi";
-import { toDateValue } from "../shared/dateUtils";
-import Loading from "../shared/Loading";
-import { showOops } from "../shared/notification";
+import { Container, Divider, Text } from "@mantine/core";
+import { EventGrid } from "./EventGrid";
+import { useState, useEffect } from "react";
+import { SGAEvent } from "../../../api/schemas";
+import useApi from "../../../hooks/useApi";
+import { toDateValue } from "../../shared/dateUtils";
+import Loading from "../../shared/Loading";
+import { showOops } from "../../shared/notification";
 
 
-export function HomePage() {
+export function Home() {
 
     const { apiGet } = useApi();
 
@@ -32,34 +32,24 @@ export function HomePage() {
             });
     }, [apiGet]);
 
-    const eventsColumns = useMemo(() => {
-        return sgaEvents.map((x) => {
-            return (
-                <Grid.Col span={{ md: 4, sm: 6, xs: 12 }} key={x.id}>
-                    <Center>
-                        <SGAEventCard sgaEvent={x} />
-                    </Center>
-                </Grid.Col>
-            );
-        });
-    }, [sgaEvents]);
-
     if (loading) {
         return <Loading visible={loading} />;
     }
 
     return (
-        <Container fluid>
+        <Container fluid w="100%">
             <Text fw={600} size="lg">
                 Events
             </Text>
+
             <Divider mb="md" mt="xs" />
-            <Grid justify="center" align="stretch">
-                {eventsColumns}
-            </Grid>
+
+            <EventGrid sgaEvents={sgaEvents} />
+
             <Text fw={600} size="lg" mt={40}>
                 About Us
             </Text>
+
             <Text size="md" fw={300}>
                 We are a collective group of families who sincerely share
                 information, advice and insights to grow the better tomorrows.
