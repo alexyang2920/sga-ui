@@ -37,7 +37,10 @@ export function Home() {
     }
 
     return (
-        <Container fluid w="100%">
+        <Container fluid w="100%" style={{
+            paddingLeft: "0px",
+            paddingRight: "0px",
+        }}>
             <Text fw={600} size="lg">
                 Events
             </Text>

@@ -8,7 +8,7 @@ import classes from "./Footer.module.css";
 
 export function AppFooter() {
     return (
-        <footer className={classes.footer}>
+        <footer className={classes.footer} style={{ position: 'sticky', bottom: 0, zIndex: 500 }}>
             <Container className={classes.afterFooter}>
                 <Text c="dimmed" size="sm">
                     © {new Date().getFullYear()} sharegrow.org All rights
@@ -21,7 +21,7 @@ export function AppFooter() {
                     justify="flex-end"
                     wrap="nowrap"
                 >
-                    <ActionIcon size="lg" color="gray" variant="subtle">
+                    <ActionIcon size="md" color="gray" variant="subtle">
                         <Anchor
                             href="https://twitter.com/ShareandGrow2"
                             target="_blank"
@@ -35,7 +35,7 @@ export function AppFooter() {
                             />
                         </Anchor>
                     </ActionIcon>
-                    <ActionIcon size="lg" color="gray" variant="subtle">
+                    <ActionIcon size="md" color="gray" variant="subtle">
                         <Anchor
                             href="https://www.youtube.com/channel/UCCcgTMbM45TMXGEgRaFDcEg"
                             target="_blank"
@@ -49,7 +49,7 @@ export function AppFooter() {
                             />
                         </Anchor>
                     </ActionIcon>
-                    <ActionIcon size="lg" color="gray" variant="subtle">
+                    <ActionIcon size="md" color="gray" variant="subtle">
                         <Anchor
                             href="https://www.instagram.com/shareandgroworg/"
                             target="_blank"

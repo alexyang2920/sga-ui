@@ -124,8 +124,8 @@ export function AppHeader() {
     }, [isAuthenticated, handleButton, closeDrawer]);
 
     return (
-        <Box pb={20}>
-            <header className={classes.header}>
+        <Box pb={20} style={{ position: 'sticky', top: 0, zIndex: 500}}>
+            <header className={classes.header} style={{ background: '#FFFFFF' }}>
                 <Group justify="space-between" h="100%">
                     <SGALogo />
 

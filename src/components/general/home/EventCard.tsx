@@ -17,7 +17,7 @@ export function EventCard(props: { sgaEvent: SGAEvent }) {
             className={classes.card}
         >
             <Card.Section style={{ cursor: 'pointer' }} onClick={() => navigate(`/events/${sgaEvent.id}`)}>
-                <Image src={sgaEvent.image ?? defaultImage} h={300} />
+                <Image src={sgaEvent.image ?? defaultImage} className={classes.image} />
             </Card.Section>
 
             <Text fw={500} size="md" mt="md">

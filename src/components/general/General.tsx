@@ -19,11 +19,15 @@ export function General() {
             style={{
                 height: "100vh",
                 display: "flex",
-                flexDirection: "column"
+                flexDirection: "column",
             }}
         >
             <AppHeader />
-            <Container style={{ flex: 1, overflowY: "auto" }}>
+            <Container
+                style={{
+                    flex: 1
+                }}
+            >
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<LoginPage />} />
