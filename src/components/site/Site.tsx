@@ -7,13 +7,17 @@ import { LoginPage } from '../general/auth/LoginPage';
 import { SignupPage } from '../general/auth/SignupPage';
 import { EventPage } from '../general/events/EventPage';
 import { Home } from '../general/home/Home';
-import { NotFound } from '../shared/NotFound';
-import { Footer } from './layout/Footer';
+
 import { useCallback } from 'react';
 import useAuth from '../../hooks/useAuth';
+
+import SGALogo from '../shared/SGALogo';
+import { NotFound } from '../shared/NotFound';
+
 import { AuthMenu } from './layout/AuthMenu';
 import { SiteMenu } from './layout/SiteMenu';
-import SGALogo from '../shared/SGALogo';
+import { Footer } from './layout/Footer';
+
 
 export function Site() {
     const [navBarOpened, { toggle: toggleNavBar, close: closeNavBar }] = useDisclosure(false);
@@ -43,7 +47,7 @@ export function Site() {
         >
             <AppShell.Header>
                 <Group h="100%" px="md">
-                    <Burger opened={navBarOpened} onClick={toggleNavBar} hiddenFrom="md" size="sm" />
+                    <Burger opened={navBarOpened} onClick={toggleNavBar} hiddenFrom="md" size="md" />
                     <Group justify="space-between" style={{ flex: 1 }}>
                         <Group gap="xs">
                             <SGALogo />
@@ -54,6 +58,7 @@ export function Site() {
                         </Group>
                         <Group visibleFrom='md'>
                             <AuthMenu
+                                isMobile={false}
                                 handleLogout={handleLogout}
                                 handleNavigate={handleNavigate}
                             />
@@ -69,6 +74,7 @@ export function Site() {
 
                 <Group justify="center" grow pb="xl" px="md" mb="xl" >
                     <AuthMenu
+                        isMobile={true}
                         handleLogout={handleLogout}
                         handleNavigate={handleNavigate}
                     />

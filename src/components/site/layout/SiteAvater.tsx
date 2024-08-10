@@ -6,10 +6,9 @@ import {
     IconSchool,
     IconLogout
 } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { RoleEnum } from "../../../api/schemas";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 const getInitialName = (name: string) => {
     let parts = name.split(" ");
@@ -20,25 +19,12 @@ const getInitialName = (name: string) => {
 };
 
 interface AvatarMenuProps {
-    closeNavBar: () => void;
+    handleNavigate: (link: string) => () => void;
+    handleLogout: () => void;
 }
 
-export function SiteAvater({ closeNavBar }: AvatarMenuProps) {
-    const navigate = useNavigate();
-    const { logout, user, hasRole } = useAuth();
-
-    const handleNavigate = useCallback((link: string) => {
-        return () => {
-            closeNavBar();
-            navigate(link);
-        };
-    }, [closeNavBar])
-
-    const handleLogout = useCallback(() => {
-        closeNavBar();
-        logout();
-        navigate("/", { replace: true });
-    }, [logout, closeNavBar]);
+export function SiteAvater({ handleNavigate, handleLogout }: AvatarMenuProps) {
+    const { user, hasRole } = useAuth();
 
     const menuItems = useMemo(() => {
         return (
