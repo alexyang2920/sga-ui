@@ -9,7 +9,7 @@ import {
     IconUsers,
 } from '@tabler/icons-react';
 import classes from './NavBar.module.css';
-import { Anchor } from '@mantine/core';
+import { Anchor, Group, Text } from '@mantine/core';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 
@@ -33,7 +33,7 @@ interface NavBarProps {
 export function NavBar({handleClose}: NavBarProps) {
     const navigate = useNavigate();
     const location = useLocation();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
 
     const activeLabel = getActiveLable(location.pathname);
 
@@ -74,9 +74,12 @@ export function NavBar({handleClose}: NavBarProps) {
 
     return (
         <nav className={classes.navbar}>
-            <div className={classes.navbarMain}>
-                {links}
-            </div>
+            <Group className={classes.header} gap={1}>
+                <Text>{user?.name}</Text>
+                <Text>({user?.email})</Text>
+            </Group>
+
+            {links}
 
             <div className={classes.footer}>
                 <a href="#" className={classes.link} onClick={handleNavigate('/')}>
@@ -84,7 +87,7 @@ export function NavBar({handleClose}: NavBarProps) {
                     <span>Exit Dashboard</span>
                 </a>
 
-                <a href="#" className={classes.link} onClick={handleLogout}>
+                <a href="#" className={classes.link} onClick={handleLogout} style={{ marginBottom: `calc(var(--mantine-spacing-xl))`}}>
                     <IconLogout className={classes.linkIcon} stroke={1.5} />
                     <span>Logout</span>
                 </a>

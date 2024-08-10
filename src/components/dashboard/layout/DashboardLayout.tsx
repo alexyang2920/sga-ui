@@ -36,7 +36,7 @@ export const DashboardLayout : React.FC<DashboardLayoutProps> = ({children}) => 
                     <Text fw={500} c="#58ae93">Share & Grow</Text>
                 </Group>
             </AppShell.Header>
-            <AppShell.Navbar p="md">
+            <AppShell.Navbar p="md" style={{ height: '100vh', overflowY: 'auto'}}>
                 <NavBar handleClose={handleClose} />
             </AppShell.Navbar>
             <AppShell.Main>
