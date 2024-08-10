@@ -68,7 +68,7 @@ export function Site() {
                 </Group>
             </AppShell.Header>
 
-            <AppShell.Navbar py="md" px={4}>
+            <AppShell.Navbar py="md" px={4} zIndex={1000} style={{ height: '100vh', overflowY: 'auto'}}>
                 <SiteMenu closeNavBar={closeNavBar} isMobile={true} />
 
                 {isAuthenticated && <Divider my="sm" />}
