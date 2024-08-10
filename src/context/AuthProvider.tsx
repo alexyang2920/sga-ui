@@ -3,9 +3,12 @@ import React, {
     ReactNode,
     createContext,
     useCallback,
-    useMemo
+    useMemo,
+    useEffect
 } from "react";
 import { RoleEnum, User } from "../api/schemas";
+import { fetchMe } from "../api/auth";
+import useApi from "../hooks/useApi";
 
 export interface AuthContextType {
     token: string | null;
@@ -15,6 +18,7 @@ export interface AuthContextType {
     logout: () => void;
     hasRole: (roleName: RoleEnum) => boolean;
     setUser: (user: User | null) => void;
+    isLoading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -24,7 +28,8 @@ export const AuthContext = createContext<AuthContextType>({
     login: () => {},
     logout: () => {},
     hasRole: () => false,
-    setUser: () => {}
+    setUser: () => {},
+    isLoading: false,
 });
 
 interface AuthProviderProps {
@@ -43,8 +48,11 @@ function getAccessToken(): string | null {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+    const { apiGet } = useApi();
+
     const [token, setToken] = useState<string | null>(getAccessToken());
     const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const login = useCallback((token: string) => {
         localStorage.setItem(AUTH_KEY, token);
@@ -56,6 +64,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setToken(null);
         setUser(null);
     }, []);
+
+    useEffect(() => {
+        setIsLoading(true);
+        if (token !== null) {
+            const fetchUser = async () => {
+                try {
+                    const user = await fetchMe(token);
+                    setUser(user);
+                } catch (error) {
+                    logout();
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            fetchUser();
+        } else {
+            setIsLoading(false);
+        }
+    }, [token]);
 
     const roleNames = useMemo(() => {
         return user ? new Set(user.roles.map((x) => x.name)) : new Set();
@@ -79,7 +107,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 login,
                 logout,
                 hasRole,
-                setUser
+                setUser,
+                isLoading,
             }}
         >
             {children}

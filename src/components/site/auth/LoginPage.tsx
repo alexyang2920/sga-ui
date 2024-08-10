@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
     TextInput,
     PasswordInput,
@@ -19,7 +19,7 @@ import useAuth from "../../../hooks/useAuth";
 import { ApiError } from "../../../api/schemas";
 
 function LoginForm() {
-    const { login } = useAuth();
+    const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
     const [error, setError] = useState<string | null>(null);
@@ -49,14 +49,13 @@ function LoginForm() {
                     icon: <IconCheck size={16} />,
                     autoClose: 5000
                 });
-                navigate("/", { replace: true });
             } catch (error) {
                 setError((error as ApiError).message ?? "");
             } finally {
                 setLoading(false);
             }
         },
-        [formData, navigate]
+        [formData]
     );
 
     const handleChange =
@@ -69,6 +68,10 @@ function LoginForm() {
         };
 
     const xIcon = <IconX style={{ width: rem(20), height: rem(20) }} />;
+
+    if (isAuthenticated) {
+        return <Navigate to="/" replace={true} />;
+    }
 
     return (
         <Paper

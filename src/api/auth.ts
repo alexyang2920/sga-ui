@@ -1,4 +1,4 @@
-import { doPost, doFormPost } from "./common";
+import { doPost, doFormPost, apiFetch } from "./common";
 
 interface SignupPayload {
     name: string;
@@ -22,3 +22,15 @@ export async function signin(payload: SigninPayload) {
     data.append("password", payload.password);
     return await doFormPost("/api/auth/token", data);
 }
+
+export async function fetchMe(token: string) {
+    return await apiFetch({
+        url: '/api/users/me',
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+        }
+    });
+}
+
