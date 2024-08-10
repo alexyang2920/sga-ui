@@ -33,7 +33,7 @@ export const DashboardLayout : React.FC<DashboardLayoutProps> = ({children}) => 
                     <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
                     <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
                     <SGALogo />
-                    <Text fw={400}>Share and Grow</Text>
+                    <Text fw={500} c="#58ae93">Share & Grow</Text>
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar p="md">

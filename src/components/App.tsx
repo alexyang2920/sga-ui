@@ -5,7 +5,8 @@ import useApi from "../hooks/useApi";
 import { useEffect, useState } from "react";
 import { ProtectedRoute } from "./ProtectedRoute";
 import Loading from "./shared/Loading";
-import { General } from "./general/General";
+// import { General } from "./general/General";
+import { Site } from "./site/Site";
 
 export default function App() {
     const { token, logout, setUser } = useAuth();
@@ -42,7 +43,7 @@ export default function App() {
             <Route element={<ProtectedRoute />}>
                 <Route path="/Dashboard/*" element={<Dashboard />} />
             </Route>
-            <Route path="/*" element={<General />} />
+            <Route path="/*" element={<Site />} />
         </Routes>
     );
 }
