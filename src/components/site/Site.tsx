@@ -25,7 +25,7 @@ export function Site() {
 
     const navigate = useNavigate();
 
-    const { logout } = useAuth();
+    const { logout, isAuthenticated } = useAuth();
 
     const handleLogout = useCallback(() => {
         closeNavBar();
@@ -71,9 +71,8 @@ export function Site() {
             <AppShell.Navbar py="md" px={4}>
                 <SiteMenu closeNavBar={closeNavBar} isMobile={true} />
 
-                <Divider my="sm" />
-
-                <ProfileSiteMenu handleNavigate={handleNavigate} />
+                {isAuthenticated && <Divider my="sm" />}
+                {isAuthenticated && <ProfileSiteMenu handleNavigate={handleNavigate} />}
 
                 <Divider my="sm" />
 
