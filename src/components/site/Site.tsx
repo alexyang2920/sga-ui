@@ -47,7 +47,7 @@ export function Site() {
         >
             <AppShell.Header>
                 <Group h="100%" px="md">
-                    <Burger opened={navBarOpened} onClick={toggleNavBar} hiddenFrom="md" size="md" />
+                    <Burger opened={navBarOpened} onClick={toggleNavBar} hiddenFrom="md" size="sm" />
                     <Group justify="space-between" style={{ flex: 1 }}>
                         <Group gap="xs">
                             <SGALogo />
