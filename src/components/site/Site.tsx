@@ -17,6 +17,7 @@ import { NotFound } from '../shared/NotFound';
 import { AuthMenu } from './layout/AuthMenu';
 import { SiteMenu } from './layout/SiteMenu';
 import { Footer } from './layout/Footer';
+import { ProfileSiteMenu } from './layout/ProfileMenu';
 
 
 export function Site() {
@@ -72,7 +73,11 @@ export function Site() {
 
                 <Divider my="sm" />
 
-                <Group justify="center" grow pb="xl" px="md" mb="xl" >
+                <ProfileSiteMenu handleNavigate={handleNavigate} />
+
+                <Divider my="sm" />
+
+                <Group justify="center" grow pb="xl" px="md" mb="xl" mt="md" >
                     <AuthMenu
                         isMobile={true}
                         handleLogout={handleLogout}
