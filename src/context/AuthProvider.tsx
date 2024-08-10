@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import { RoleEnum, User } from "../api/schemas";
 import { fetchMe } from "../api/auth";
-import useApi from "../hooks/useApi";
 
 export interface AuthContextType {
     token: string | null;
@@ -48,8 +47,6 @@ function getAccessToken(): string | null {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const { apiGet } = useApi();
-
     const [token, setToken] = useState<string | null>(getAccessToken());
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
