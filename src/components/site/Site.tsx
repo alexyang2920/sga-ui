@@ -1,12 +1,12 @@
 import { AppShell, Burger, Container, Divider, Group, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { AboutUs } from '../general/AboutUs';
-import { SupportUs } from '../general/SupportUs';
-import { LoginPage } from '../general/auth/LoginPage';
-import { SignupPage } from '../general/auth/SignupPage';
-import { EventPage } from '../general/events/EventPage';
-import { Home } from '../general/home/Home';
+import { AboutUs } from './AboutUs';
+import { SupportUs } from './SupportUs';
+import { LoginPage } from './auth/LoginPage';
+import { SignupPage } from './auth/SignupPage';
+import { EventPage } from './events/EventPage';
+import { Home } from './home/Home';
 
 import { useCallback } from 'react';
 import useAuth from '../../hooks/useAuth';
