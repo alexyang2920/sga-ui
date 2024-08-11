@@ -1,4 +1,4 @@
-import { ApiError } from "./schemas";
+import type { ApiError } from "./schemas";
 
 interface FetchProps {
     url: string;
@@ -27,11 +27,19 @@ export async function apiFetch({
         const response = await fetch(url, options);
 
         if (!response.ok) {
-            const error = await response.json();
-            throw {
-                message: error.message || "An error occurred",
-                status: response.status
-            };
+            switch(response.status) {
+                case 500:
+                    throw {
+                        message: "Server not available",
+                        status: 500,
+                    };
+                default:
+                    const error = await response.json();
+                    throw {
+                        message: error?.detail || "An error occurred",
+                        status: response.status
+                    } as ApiError;
+            }
         }
 
         if (response.status !== 204) {
@@ -40,11 +48,8 @@ export async function apiFetch({
     } catch (error) {
         // Handle network errors or other unexpected issues
         throw {
-            status: 500,
-            message:
-                error instanceof Error
-                    ? error.message
-                    : "An unexpected error occurred"
+            status: (error as any)?.status ?? 500,
+            message: (error as any)?.message ?? "An unexpected error occurred",
         } as ApiError;
     }
 }

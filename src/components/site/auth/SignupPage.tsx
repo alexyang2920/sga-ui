@@ -16,6 +16,7 @@ import {
 import { IconX, IconCheck } from "@tabler/icons-react";
 import { signup } from "../../../api/auth";
 import { useCallback, useState } from "react";
+import { ApiError } from "../../../api/schemas";
 
 function SignupForm() {
     const navigate = useNavigate();
@@ -49,7 +50,7 @@ function SignupForm() {
             await signup(form.values);
             setSuccess(true);
         } catch (error) {
-            setError(error as any);
+            setError((error as ApiError).message ?? "");
         } finally {
             setLoading(false);
         }
