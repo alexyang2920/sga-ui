@@ -1,14 +1,13 @@
-import { Text } from '@mantine/core';
-import { RichTextEditor, Link } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
-import Highlight from '@tiptap/extension-highlight';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import Superscript from '@tiptap/extension-superscript';
-import SubScript from '@tiptap/extension-subscript';
-import { useState } from 'react';
-
+import { Text } from "@mantine/core";
+import { RichTextEditor, Link } from "@mantine/tiptap";
+import { useEditor } from "@tiptap/react";
+import Highlight from "@tiptap/extension-highlight";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import TextAlign from "@tiptap/extension-text-align";
+import Superscript from "@tiptap/extension-superscript";
+import SubScript from "@tiptap/extension-subscript";
+import { useState } from "react";
 
 interface ContentEditorProps {
     label: string;
@@ -16,26 +15,34 @@ interface ContentEditorProps {
     onContentUpdate: (content: string) => void;
 }
 
-
-export function ContentEditor({ label, onContentUpdate, initContent }: ContentEditorProps) {
+export function ContentEditor({
+    label,
+    onContentUpdate,
+    initContent
+}: ContentEditorProps) {
     // Make sure editor can only initialized for the first time it rendered.
-    const [initialEditorContent, _] = useState<string | null | undefined>(initContent);
+    const [initialEditorContent, _] = useState<string | null | undefined>(
+        initContent
+    );
 
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline,
-            Link,
-            Superscript,
-            SubScript,
-            Highlight,
-            TextAlign.configure({ types: ['heading', 'paragraph'] }),
-        ],
-        content: initialEditorContent,
-        onUpdate(props) {
-            onContentUpdate(props.editor.getHTML());
+    const editor = useEditor(
+        {
+            extensions: [
+                StarterKit,
+                Underline,
+                Link,
+                Superscript,
+                SubScript,
+                Highlight,
+                TextAlign.configure({ types: ["heading", "paragraph"] })
+            ],
+            content: initialEditorContent,
+            onUpdate(props) {
+                onContentUpdate(props.editor.getHTML());
+            }
         },
-    }, [onContentUpdate, initialEditorContent]);
+        [onContentUpdate, initialEditorContent]
+    );
 
     return (
         <>

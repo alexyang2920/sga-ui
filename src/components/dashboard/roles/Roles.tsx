@@ -28,7 +28,7 @@ export function DashboardRoles() {
     const rows = useMemo(() => {
         return data.map((item) => {
             return (
-                <Table.Tr key={item.id} >
+                <Table.Tr key={item.id}>
                     <Table.Td>{item.id}</Table.Td>
                     <Table.Td>{item.name}</Table.Td>
                 </Table.Tr>
@@ -42,7 +42,9 @@ export function DashboardRoles() {
 
     return (
         <>
-            <Text fw={600} pb={"md"}>Roles</Text>
+            <Text fw={600} pb={"md"}>
+                Roles
+            </Text>
             {error && <ErrorAlert error={error} />}
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>

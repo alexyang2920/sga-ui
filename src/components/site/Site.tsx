@@ -1,27 +1,34 @@
-import { AppShell, Burger, Container, Divider, Group, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { AboutUs } from './AboutUs';
-import { SupportUs } from './SupportUs';
-import { LoginPage } from './auth/LoginPage';
-import { SignupPage } from './auth/SignupPage';
-import { EventPage } from './events/EventPage';
-import { Home } from './home/Home';
+import {
+    AppShell,
+    Burger,
+    Container,
+    Divider,
+    Group,
+    Text
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { AboutUs } from "./AboutUs";
+import { SupportUs } from "./SupportUs";
+import { LoginPage } from "./auth/LoginPage";
+import { SignupPage } from "./auth/SignupPage";
+import { EventPage } from "./events/EventPage";
+import { Home } from "./home/Home";
 
-import { useCallback } from 'react';
-import useAuth from '../../hooks/useAuth';
+import { useCallback } from "react";
+import useAuth from "../../hooks/useAuth";
 
-import SGALogo from '../shared/SGALogo';
-import { NotFound } from '../shared/NotFound';
+import SGALogo from "../shared/SGALogo";
+import { NotFound } from "../shared/NotFound";
 
-import { AuthMenu } from './layout/AuthMenu';
-import { SiteMenu } from './layout/SiteMenu';
-import { Footer } from './layout/Footer';
-import { ProfileSiteMenu } from './layout/ProfileMenu';
-
+import { AuthMenu } from "./layout/AuthMenu";
+import { SiteMenu } from "./layout/SiteMenu";
+import { Footer } from "./layout/Footer";
+import { ProfileSiteMenu } from "./layout/ProfileMenu";
 
 export function Site() {
-    const [navBarOpened, { toggle: toggleNavBar, close: closeNavBar }] = useDisclosure(false);
+    const [navBarOpened, { toggle: toggleNavBar, close: closeNavBar }] =
+        useDisclosure(false);
 
     const navigate = useNavigate();
 
@@ -31,33 +38,50 @@ export function Site() {
         closeNavBar();
         logout();
         navigate("/", { replace: true });
-    }, [navigate, logout, closeNavBar])
+    }, [navigate, logout, closeNavBar]);
 
-    const handleNavigate = useCallback((link: string) => {
-        return () => {
-            closeNavBar();
-            navigate(link);
-        }
-    }, [navigate, closeNavBar]);
+    const handleNavigate = useCallback(
+        (link: string) => {
+            return () => {
+                closeNavBar();
+                navigate(link);
+            };
+        },
+        [navigate, closeNavBar]
+    );
 
     return (
         <AppShell
             header={{ height: 60 }}
-            navbar={{ width: 300, breakpoint: 'md', collapsed: { desktop: true, mobile: !navBarOpened } }}
+            navbar={{
+                width: 300,
+                breakpoint: "md",
+                collapsed: { desktop: true, mobile: !navBarOpened }
+            }}
             padding="md"
         >
             <AppShell.Header>
                 <Group h="100%" px="md">
-                    <Burger opened={navBarOpened} onClick={toggleNavBar} hiddenFrom="md" size="sm" />
+                    <Burger
+                        opened={navBarOpened}
+                        onClick={toggleNavBar}
+                        hiddenFrom="md"
+                        size="sm"
+                    />
                     <Group justify="space-between" style={{ flex: 1 }}>
                         <Group gap="xs">
                             <SGALogo />
-                            <Text fw={500} c="#58ae93">Share & Grow</Text>
+                            <Text fw={500} c="#58ae93">
+                                Share & Grow
+                            </Text>
                         </Group>
                         <Group ml="xl" gap={0} visibleFrom="md">
-                            <SiteMenu closeNavBar={closeNavBar} isMobile={false} />
+                            <SiteMenu
+                                closeNavBar={closeNavBar}
+                                isMobile={false}
+                            />
                         </Group>
-                        <Group visibleFrom='md'>
+                        <Group visibleFrom="md">
                             <AuthMenu
                                 isMobile={false}
                                 handleLogout={handleLogout}
@@ -68,15 +92,22 @@ export function Site() {
                 </Group>
             </AppShell.Header>
 
-            <AppShell.Navbar py="md" px={4} zIndex={1000} style={{ height: '100vh', overflowY: 'auto'}}>
+            <AppShell.Navbar
+                py="md"
+                px={4}
+                zIndex={1000}
+                style={{ height: "100vh", overflowY: "auto" }}
+            >
                 <SiteMenu closeNavBar={closeNavBar} isMobile={true} />
 
                 {isAuthenticated && <Divider my="sm" />}
-                {isAuthenticated && <ProfileSiteMenu handleNavigate={handleNavigate} />}
+                {isAuthenticated && (
+                    <ProfileSiteMenu handleNavigate={handleNavigate} />
+                )}
 
                 <Divider my="sm" />
 
-                <Group justify="center" grow pb="xl" px="md" mb="xl" mt="md" >
+                <Group justify="center" grow pb="xl" px="md" mb="xl" mt="md">
                     <AuthMenu
                         isMobile={true}
                         handleLogout={handleLogout}

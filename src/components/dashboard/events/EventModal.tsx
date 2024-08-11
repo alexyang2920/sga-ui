@@ -1,8 +1,8 @@
-import { Button, Group, Modal, TextInput } from '@mantine/core';
-import { ContentEditor } from './ContentEditor';
-import type { SGAEventCreate, SGAEvent } from '../../../api/schemas';
-import { useCallback, useState } from 'react';
-import { DateTimePicker } from '@mantine/dates';
+import { Button, Group, Modal, TextInput } from "@mantine/core";
+import { ContentEditor } from "./ContentEditor";
+import type { SGAEventCreate, SGAEvent } from "../../../api/schemas";
+import { useCallback, useState } from "react";
+import { DateTimePicker } from "@mantine/dates";
 
 interface EventModalProps {
     title: string;
@@ -14,15 +14,15 @@ interface EventModalProps {
 
 function initValues(event?: SGAEvent | null): SGAEventCreate {
     if (event) {
-        return {...event};
+        return { ...event };
     }
     return {
-        title: '',
-        content: '',
-        image: '',
-        location: '',
+        title: "",
+        content: "",
+        image: "",
+        location: "",
         start_date_time: null,
-        end_date_time: null,
+        end_date_time: null
     };
 }
 
@@ -31,12 +31,23 @@ function initValues(event?: SGAEvent | null): SGAEventCreate {
  * such that the editor can be recreated,
  * otherwise no way to clear the old text in the editor.
  */
-export function EventModal({ title, close, opened, onSubmit, selectedEvent }: EventModalProps) {
-    const [sgaEvent, setSgaEvent] = useState<SGAEventCreate>(initValues(selectedEvent));
+export function EventModal({
+    title,
+    close,
+    opened,
+    onSubmit,
+    selectedEvent
+}: EventModalProps) {
+    const [sgaEvent, setSgaEvent] = useState<SGAEventCreate>(
+        initValues(selectedEvent)
+    );
 
     const handleInputChange = useCallback((field: string) => {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
-            setSgaEvent((previous) => ({ ...previous, [field]: event.target.value }));
+            setSgaEvent((previous) => ({
+                ...previous,
+                [field]: event.target.value
+            }));
         };
     }, []);
 
@@ -71,40 +82,40 @@ export function EventModal({ title, close, opened, onSubmit, selectedEvent }: Ev
                 label="Title"
                 placeholder=""
                 value={sgaEvent.title}
-                onChange={handleInputChange('title')}
+                onChange={handleInputChange("title")}
             />
 
             <TextInput
                 label="Location"
                 placeholder=""
                 value={sgaEvent.location}
-                onChange={handleInputChange('location')}
+                onChange={handleInputChange("location")}
                 mt="md"
             />
 
             <TextInput
                 label="Image URL"
                 placeholder=""
-                value={sgaEvent?.image ?? ''}
-                onChange={handleInputChange('image')}
+                value={sgaEvent?.image ?? ""}
+                onChange={handleInputChange("image")}
                 mt="md"
             />
 
             <DateTimePicker
                 label="Start Date Time"
                 placeholder="Pick date and time"
-                valueFormat='YYYY-MM-DD HH:mm:ss'
+                valueFormat="YYYY-MM-DD HH:mm:ss"
                 value={sgaEvent?.start_date_time}
-                onChange={handleDateChange('start_date_time')}
+                onChange={handleDateChange("start_date_time")}
                 mt="md"
             />
 
             <DateTimePicker
                 label="End Date Time"
                 placeholder="Pick date and time"
-                valueFormat='YYYY-MM-DD HH:mm:ss'
+                valueFormat="YYYY-MM-DD HH:mm:ss"
                 value={sgaEvent?.end_date_time}
-                onChange={handleDateChange('end_date_time')}
+                onChange={handleDateChange("end_date_time")}
                 mt="md"
             />
 
@@ -115,10 +126,10 @@ export function EventModal({ title, close, opened, onSubmit, selectedEvent }: Ev
             />
 
             <Group mt="md">
-                <Button variant='default' onClick={handleSubmit}>
+                <Button variant="default" onClick={handleSubmit}>
                     Save
                 </Button>
-                <Button variant='default' onClick={handleClose}>
+                <Button variant="default" onClick={handleClose}>
                     Cancel
                 </Button>
             </Group>

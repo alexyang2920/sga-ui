@@ -28,7 +28,7 @@ export const AuthContext = createContext<AuthContextType>({
     logout: () => {},
     hasRole: () => false,
     setUser: () => {},
-    isLoading: false,
+    isLoading: false
 });
 
 interface AuthProviderProps {
@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 logout,
                 hasRole,
                 setUser,
-                isLoading,
+                isLoading
             }}
         >
             {children}

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from "react";
 import {
     IconSwitchHorizontal,
     IconLogout,
@@ -6,12 +6,12 @@ import {
     IconAbc,
     IconDashboard,
     IconForms,
-    IconUsers,
-} from '@tabler/icons-react';
-import classes from './NavBar.module.css';
-import { Anchor, Group, Text } from '@mantine/core';
-import { useNavigate, useLocation } from 'react-router-dom';
-import useAuth from '../../../hooks/useAuth';
+    IconUsers
+} from "@tabler/icons-react";
+import classes from "./NavBar.module.css";
+import { Anchor, Group, Text } from "@mantine/core";
+import { useNavigate, useLocation } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 
 const data = [
     { link: "/dashboard", label: "Home", icon: IconDashboard },
@@ -30,26 +30,32 @@ interface NavBarProps {
     handleClose: () => void;
 }
 
-export function NavBar({handleClose}: NavBarProps) {
+export function NavBar({ handleClose }: NavBarProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const { logout, user } = useAuth();
 
     const activeLabel = getActiveLable(location.pathname);
 
-    const handleClick = useCallback((link: string) => {
-        return () => {
-            handleClose();
-            navigate(link);
-        };
-    }, [navigate, handleClose]);
+    const handleClick = useCallback(
+        (link: string) => {
+            return () => {
+                handleClose();
+                navigate(link);
+            };
+        },
+        [navigate, handleClose]
+    );
 
-    const handleNavigate = useCallback((link: string) => {
-        return (event: React.MouseEvent<HTMLAnchorElement>) => {
-            event.preventDefault();
-            navigate(link);
-        };
-    }, [navigate]);
+    const handleNavigate = useCallback(
+        (link: string) => {
+            return (event: React.MouseEvent<HTMLAnchorElement>) => {
+                event.preventDefault();
+                navigate(link);
+            };
+        },
+        [navigate]
+    );
 
     const handleLogout = useCallback(() => {
         logout();
@@ -57,19 +63,19 @@ export function NavBar({handleClose}: NavBarProps) {
     }, [navigate, logout]);
 
     const links = useMemo(() => {
-        return (
-            data.map((item) => (
-                <Anchor
-                    className={classes.link}
-                    data-active={item.label.toLowerCase() === activeLabel || undefined}
-                    onClick={handleClick(item.link)}
-                    key={item.label}
-                >
-                    <item.icon className={classes.linkIcon} stroke={1.5} />
-                    <span>{item.label}</span>
-                </Anchor>
-            ))
-        );
+        return data.map((item) => (
+            <Anchor
+                className={classes.link}
+                data-active={
+                    item.label.toLowerCase() === activeLabel || undefined
+                }
+                onClick={handleClick(item.link)}
+                key={item.label}
+            >
+                <item.icon className={classes.linkIcon} stroke={1.5} />
+                <span>{item.label}</span>
+            </Anchor>
+        ));
     }, [handleClick]);
 
     return (
@@ -82,12 +88,24 @@ export function NavBar({handleClose}: NavBarProps) {
             {links}
 
             <div className={classes.footer}>
-                <a href="#" className={classes.link} onClick={handleNavigate('/')}>
-                    <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
+                <a
+                    href="#"
+                    className={classes.link}
+                    onClick={handleNavigate("/")}
+                >
+                    <IconSwitchHorizontal
+                        className={classes.linkIcon}
+                        stroke={1.5}
+                    />
                     <span>Exit Dashboard</span>
                 </a>
 
-                <a href="#" className={classes.link} onClick={handleLogout} style={{ marginBottom: `calc(var(--mantine-spacing-xl))`}}>
+                <a
+                    href="#"
+                    className={classes.link}
+                    onClick={handleLogout}
+                    style={{ marginBottom: `calc(var(--mantine-spacing-xl))` }}
+                >
                     <IconLogout className={classes.linkIcon} stroke={1.5} />
                     <span>Logout</span>
                 </a>

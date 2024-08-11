@@ -1,10 +1,20 @@
-import type { ApiError } from "./schemas";
+import { ApiError, ApiErrorDetail } from "./schemas";
 
 interface FetchProps {
     url: string;
     method: string;
     headers?: Record<string, any>;
     payload?: Record<string, any> | FormData;
+}
+
+function getErrorDetails(detail: any[]) {
+    return detail.map(
+        (x) =>
+            ({
+                field: x.loc.at(-1),
+                message: x.msg
+            }) as ApiErrorDetail
+    );
 }
 
 export async function apiFetch({
@@ -27,17 +37,24 @@ export async function apiFetch({
         const response = await fetch(url, options);
 
         if (!response.ok) {
-            switch(response.status) {
+            switch (response.status) {
                 case 500:
                     throw {
                         message: "Server not available",
-                        status: 500,
+                        status: 500
                     };
                 default:
                     const error = await response.json();
+                    const message = !Array.isArray(error?.detail)
+                        ? error?.detail
+                        : "";
+                    const detail = Array.isArray(error?.detail)
+                        ? getErrorDetails(error.detail)
+                        : [];
                     throw {
-                        message: error?.detail || "An error occurred",
-                        status: response.status
+                        message: message,
+                        status: response.status,
+                        detail: detail
                     } as ApiError;
             }
         }
@@ -50,6 +67,7 @@ export async function apiFetch({
         throw {
             status: (error as any)?.status ?? 500,
             message: (error as any)?.message ?? "An unexpected error occurred",
+            detail: (error as any)?.detail ?? []
         } as ApiError;
     }
 }

@@ -1,7 +1,5 @@
 import { Menu, rem, Avatar, Box } from "@mantine/core";
-import {
-    IconLogout,
-} from "@tabler/icons-react";
+import { IconLogout } from "@tabler/icons-react";
 import useAuth from "../../../hooks/useAuth";
 import { ProfileMenu } from "./ProfileMenu";
 
@@ -13,12 +11,10 @@ const getInitialName = (name: string) => {
     return name.substring(0, 2);
 };
 
-
 interface AvatarMenuProps {
     handleNavigate: (link: string) => () => void;
     handleLogout: () => void;
 }
-
 
 export function SiteAvater({ handleNavigate, handleLogout }: AvatarMenuProps) {
     const { user } = useAuth();
@@ -48,7 +44,11 @@ export function SiteAvater({ handleNavigate, handleLogout }: AvatarMenuProps) {
                     <Menu.Divider />
                     <Menu.Item
                         color="red"
-                        leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}
+                        leftSection={
+                            <IconLogout
+                                style={{ width: rem(14), height: rem(14) }}
+                            />
+                        }
                         onClick={handleLogout}
                     >
                         Sign out

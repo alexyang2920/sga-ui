@@ -7,9 +7,7 @@ import { toDateValue } from "../../shared/dateUtils";
 import Loading from "../../shared/Loading";
 import { showOops } from "../../shared/notification";
 
-
 export function Home() {
-
     const { apiGet } = useApi();
 
     const [sgaEvents, setSgaEvents] = useState<SGAEvent[]>([]);
@@ -18,14 +16,16 @@ export function Home() {
     useEffect(() => {
         apiGet("/api/events")
             .then((res: any[]) => {
-                setSgaEvents(res.map(x => ({
-                    ...x,
-                    start_date_time: toDateValue(x.start_date_time),
-                    end_date_time: toDateValue(x.end_date_time),
-                })));
+                setSgaEvents(
+                    res.map((x) => ({
+                        ...x,
+                        start_date_time: toDateValue(x.start_date_time),
+                        end_date_time: toDateValue(x.end_date_time)
+                    }))
+                );
             })
             .catch((error) => {
-                showOops({error: error});
+                showOops({ error: error });
             })
             .finally(() => {
                 setLoading(false);
@@ -37,10 +37,14 @@ export function Home() {
     }
 
     return (
-        <Container fluid w="100%" style={{
-            paddingLeft: "0px",
-            paddingRight: "0px",
-        }}>
+        <Container
+            fluid
+            w="100%"
+            style={{
+                paddingLeft: "0px",
+                paddingRight: "0px"
+            }}
+        >
             <Text fw={600} size="lg">
                 Events
             </Text>

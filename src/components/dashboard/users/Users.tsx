@@ -34,7 +34,7 @@ export function DashboardUsers() {
             current.includes(id)
                 ? current.filter((item) => item !== id)
                 : [...current, id]
-        )
+        );
     }, []);
 
     const toggleAll = useCallback(() => {
@@ -80,7 +80,9 @@ export function DashboardUsers() {
 
     return (
         <>
-            <Text fw={600} pb={"md"} >Users</Text>
+            <Text fw={600} pb={"md"}>
+                Users
+            </Text>
             {error && <ErrorAlert error={error} />}
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>

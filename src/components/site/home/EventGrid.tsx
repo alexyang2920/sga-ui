@@ -1,16 +1,13 @@
 import { useMemo } from "react";
-import { Grid} from "@mantine/core";
+import { Grid } from "@mantine/core";
 import { SGAEvent } from "../../../api/schemas";
 import { EventCard } from "./EventCard";
-
 
 interface SGAEventGridProps {
     sgaEvents: SGAEvent[];
 }
 
-
-export function EventGrid({sgaEvents} : SGAEventGridProps) {
-
+export function EventGrid({ sgaEvents }: SGAEventGridProps) {
     const columns = useMemo(() => {
         return sgaEvents.map((x) => {
             return (
@@ -25,5 +22,5 @@ export function EventGrid({sgaEvents} : SGAEventGridProps) {
         <Grid justify="center" align="stretch" gutter="xl">
             {columns}
         </Grid>
-    )
+    );
 }

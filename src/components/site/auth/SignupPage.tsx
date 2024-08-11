@@ -64,11 +64,7 @@ function SignupForm() {
     const checkIcon = <IconCheck style={{ width: rem(20), height: rem(20) }} />;
 
     return (
-        <Paper
-            radius="md"
-            p="xl"
-            withBorder
-        >
+        <Paper radius="md" p="xl" withBorder>
             <Text size="lg" fw={500} style={{ paddingBottom: "20px" }}>
                 Sign up
             </Text>

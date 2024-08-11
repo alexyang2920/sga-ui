@@ -25,7 +25,7 @@ export async function signin(payload: SigninPayload) {
 
 export async function fetchMe(token: string) {
     return await apiFetch({
-        url: '/api/users/me',
+        url: "/api/users/me",
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -33,4 +33,3 @@ export async function fetchMe(token: string) {
         }
     });
 }
-

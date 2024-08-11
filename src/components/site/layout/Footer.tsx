@@ -8,7 +8,10 @@ import classes from "./Footer.module.css";
 
 export function Footer() {
     return (
-        <footer className={classes.footer} style={{ position: 'sticky', bottom: 0, zIndex: 500 }}>
+        <footer
+            className={classes.footer}
+            style={{ position: "sticky", bottom: 0, zIndex: 500 }}
+        >
             <Container className={classes.afterFooter}>
                 <Text c="dimmed" size="sm">
                     © {new Date().getFullYear()} sharegrow.org All rights

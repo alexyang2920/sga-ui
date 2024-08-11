@@ -4,12 +4,12 @@
     height: 100%;
 
     @media (min-width: $mantine-breakpoint-xs) {
-      .card {
-        width: 300px; /* Fixes the width on larger screens */
-      }
+        .card {
+            width: 300px; /* Fixes the width on larger screens */
+        }
     }
 }
 
 .image {
-  height: 360px;
+    height: 360px;
 }

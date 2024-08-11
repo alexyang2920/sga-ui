@@ -12,8 +12,8 @@ export default function App() {
     const location = useLocation();
 
     useEffect(() => {
-      // Reset scroll position to top on route change
-      window.scrollTo(0, 0);
+        // Reset scroll position to top on route change
+        window.scrollTo(0, 0);
     }, [location]);
 
     if (isLoading) {

@@ -1,14 +1,14 @@
-import { Group, Text, Image, Title } from '@mantine/core';
+import { Group, Text, Image, Title } from "@mantine/core";
 import { ApiError, SGAEvent } from "../../../api/schemas";
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import useApi from '../../../hooks/useApi';
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import useApi from "../../../hooks/useApi";
 
 import { toDateString, toDateValue } from "../../shared/dateUtils";
-import Loading from '../../shared/Loading';
-import { NotFound } from '../../shared/NotFound';
-import { ErrorAlert } from '../../shared/ErrorAlert';
-import { RichTextDisplay } from '../../shared/RichTextDisplay';
+import Loading from "../../shared/Loading";
+import { NotFound } from "../../shared/NotFound";
+import { ErrorAlert } from "../../shared/ErrorAlert";
+import { RichTextDisplay } from "../../shared/RichTextDisplay";
 
 export function EventPage() {
     const { apiGet } = useApi();
@@ -28,7 +28,7 @@ export function EventPage() {
                 setSgaEvent({
                     ...event,
                     start_date_time: toDateValue(event?.start_date_time),
-                    end_date_time: toDateValue(event?.end_date_time),
+                    end_date_time: toDateValue(event?.end_date_time)
                 });
             })
             .catch((error) => {
@@ -37,16 +37,14 @@ export function EventPage() {
             .finally(() => {
                 setLoading(false);
             });
-
-    }, [eventId])
-
+    }, [eventId]);
 
     if (loading) {
         return <Loading visible={loading} />;
     }
 
     if (!sgaEvent) {
-        return <NotFound />
+        return <NotFound />;
     }
 
     return (
@@ -61,7 +59,10 @@ export function EventPage() {
 
             <Group>
                 <Text fw={600}>Time:</Text>
-                <Text>{toDateString(sgaEvent.start_date_time)} - {toDateString(sgaEvent.end_date_time)}</Text>
+                <Text>
+                    {toDateString(sgaEvent.start_date_time)} -{" "}
+                    {toDateString(sgaEvent.end_date_time)}
+                </Text>
             </Group>
 
             {sgaEvent.location && (
@@ -71,12 +72,7 @@ export function EventPage() {
                 </Group>
             )}
 
-            {sgaEvent.image && (
-                <Image
-                    mt="md"
-                    src={sgaEvent.image}
-                />
-            )}
+            {sgaEvent.image && <Image mt="md" src={sgaEvent.image} />}
         </>
-    )
+    );
 }

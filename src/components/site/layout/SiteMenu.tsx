@@ -1,10 +1,29 @@
-import { UnstyledButton, Center, Box, rem, Collapse, useMantineTheme, Anchor, Group, ThemeIcon, Text, Divider, HoverCard, SimpleGrid, MantineTheme } from "@mantine/core";
-import { IconBook, IconChevronDown, IconCode, IconCoin } from "@tabler/icons-react";
-import classes from './SiteMenu.module.css';
+import {
+    UnstyledButton,
+    Center,
+    Box,
+    rem,
+    Collapse,
+    useMantineTheme,
+    Anchor,
+    Group,
+    ThemeIcon,
+    Text,
+    Divider,
+    HoverCard,
+    SimpleGrid,
+    MantineTheme
+} from "@mantine/core";
+import {
+    IconBook,
+    IconChevronDown,
+    IconCode,
+    IconCoin
+} from "@tabler/icons-react";
+import classes from "./SiteMenu.module.css";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import { ReactNode, useCallback, useMemo } from "react";
-
 
 const resourcesLinkData = [
     {
@@ -33,53 +52,63 @@ const resourcesLinkData = [
     }
 ];
 
-
 interface SiteMenuProps {
     closeNavBar: () => void;
     isMobile: boolean;
 }
 
-
 export function SiteMenu({ closeNavBar, isMobile }: SiteMenuProps) {
     const navigate = useNavigate();
 
-    const handleNavigate = useCallback((link: string) => {
-        return () => {
-            closeNavBar();
-            navigate(link);
-        }
-    }, [navigate, closeNavBar]);
+    const handleNavigate = useCallback(
+        (link: string) => {
+            return () => {
+                closeNavBar();
+                navigate(link);
+            };
+        },
+        [navigate, closeNavBar]
+    );
 
     return (
         <>
-            <UnstyledButton className={classes.link} onClick={handleNavigate("/")} >
+            <UnstyledButton
+                className={classes.link}
+                onClick={handleNavigate("/")}
+            >
                 Home
             </UnstyledButton>
 
-            <ResourceMenu isMobile={isMobile} handleNavigate={handleNavigate}/>
+            <ResourceMenu isMobile={isMobile} handleNavigate={handleNavigate} />
 
-            <UnstyledButton className={classes.link} onClick={handleNavigate("/student-board")} >
+            <UnstyledButton
+                className={classes.link}
+                onClick={handleNavigate("/student-board")}
+            >
                 Student Board
             </UnstyledButton>
 
-            <UnstyledButton className={classes.link} onClick={handleNavigate("/support-us")} >
+            <UnstyledButton
+                className={classes.link}
+                onClick={handleNavigate("/support-us")}
+            >
                 Support Us
             </UnstyledButton>
 
-            <UnstyledButton className={classes.link} onClick={handleNavigate("/about-us")}>
+            <UnstyledButton
+                className={classes.link}
+                onClick={handleNavigate("/about-us")}
+            >
                 About
             </UnstyledButton>
-
         </>
-    )
+    );
 }
-
 
 interface ResourceMenuProps {
     handleNavigate: (link: string) => () => void;
     isMobile: boolean;
 }
-
 
 function ResourceMenu({ handleNavigate, isMobile }: ResourceMenuProps) {
     const theme = useMantineTheme();
@@ -109,7 +138,11 @@ function ResourceMenu({ handleNavigate, isMobile }: ResourceMenuProps) {
     }, [theme, handleNavigate]);
 
     const component = useMemo(() => {
-        return isMobile ? <MobileResources links={links} theme={theme} /> : <DesktopResources links={links} theme={theme} />
+        return isMobile ? (
+            <MobileResources links={links} theme={theme} />
+        ) : (
+            <DesktopResources links={links} theme={theme} />
+        );
     }, [isMobile, theme, links]);
 
     return component;
@@ -120,16 +153,12 @@ interface ResourcesProps {
     theme: MantineTheme;
 }
 
-
 function MobileResources({ links, theme }: ResourcesProps) {
     const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
 
     return (
         <>
-            <UnstyledButton
-                className={classes.link}
-                onClick={toggleLinks}
-            >
+            <UnstyledButton className={classes.link} onClick={toggleLinks}>
                 <Center inline>
                     <Box component="span" mr={5}>
                         Resources
@@ -145,7 +174,6 @@ function MobileResources({ links, theme }: ResourcesProps) {
     );
 }
 
-
 function DesktopResources({ links, theme }: ResourcesProps) {
     return (
         <HoverCard
@@ -158,7 +186,9 @@ function DesktopResources({ links, theme }: ResourcesProps) {
             <HoverCard.Target>
                 <a href="#" className={classes.link}>
                     <Center inline>
-                        <Box component="span" mr={5}>Resources</Box>
+                        <Box component="span" mr={5}>
+                            Resources
+                        </Box>
                         <IconChevronDown
                             style={{
                                 width: rem(16),

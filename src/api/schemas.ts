@@ -11,9 +11,15 @@ export interface User {
     roles: Role[];
 }
 
+export interface ApiErrorDetail {
+    field: string;
+    message: string;
+}
+
 export interface ApiError {
     message: string;
-    status?: number;
+    status: number;
+    detail?: ApiErrorDetail[];
 }
 
 export enum RoleEnum {
@@ -33,4 +39,4 @@ export interface SGAEvent {
     end_date_time: Date | null;
 }
 
-export type SGAEventCreate = Omit<SGAEvent, 'id'>;
+export type SGAEventCreate = Omit<SGAEvent, "id">;

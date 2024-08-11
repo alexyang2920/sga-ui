@@ -1,7 +1,15 @@
 import cx from "clsx";
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { Table, Checkbox, Text, rem, Group, Button, ActionIcon } from "@mantine/core";
-import { useDisclosure } from '@mantine/hooks';
+import {
+    Table,
+    Checkbox,
+    Text,
+    rem,
+    Group,
+    Button,
+    ActionIcon
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { IconEdit, IconPencil, IconTrash } from "@tabler/icons-react";
 import { EventModal } from "./EventModal";
 import { ApiError, SGAEvent, type SGAEventCreate } from "../../../api/schemas";
@@ -14,9 +22,9 @@ import { ConfirmDeletionModal } from "../../shared/ConfirmDeletionModal";
 
 import { toDateString, toDateValue } from "../../shared/dateUtils";
 
-
 export function DashboardEvents() {
-    const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
+    const [modalOpened, { open: openModal, close: closeModal }] =
+        useDisclosure(false);
 
     const [deletingEvent, setDeletingEvent] = useState<SGAEvent | null>(null);
     const [editingEvent, setEditingEvent] = useState<SGAEvent | null>(null);
@@ -32,11 +40,13 @@ export function DashboardEvents() {
     useEffect(() => {
         apiGet("/api/events")
             .then((res: any[]) => {
-                setData(res.map(x => ({
-                    ...x,
-                    start_date_time: toDateValue(x.start_date_time),
-                    end_date_time: toDateValue(x.end_date_time),
-                })));
+                setData(
+                    res.map((x) => ({
+                        ...x,
+                        start_date_time: toDateValue(x.start_date_time),
+                        end_date_time: toDateValue(x.end_date_time)
+                    }))
+                );
             })
             .catch((error) => {
                 setError((error as ApiError).message);
@@ -50,35 +60,46 @@ export function DashboardEvents() {
         setSelection((current) => {
             return current.includes(id)
                 ? current.filter((item) => item !== id)
-                : [...current, id]
-        })
+                : [...current, id];
+        });
     }, []);
 
     const toggleAll = useCallback(() => {
         setSelection((current) => {
-            return current.length === data.length ? [] : data.map((item) => item.id);
+            return current.length === data.length
+                ? []
+                : data.map((item) => item.id);
         });
     }, []);
 
-    const handleCreate = useCallback(async (sgaEvent: SGAEventCreate) => {
-        const payload = {
-            ...sgaEvent,
-            start_date_time: sgaEvent.start_date_time?.toISOString() ?? null,
-            end_date_time: sgaEvent.end_date_time?.toISOString() ?? null
-        };
-        try {
-            const event = await apiPost('/api/events', payload);
-            setData((current) => [...current, {
-                ...event,
-                start_date_time: toDateValue(event.start_date_time),
-                end_date_time: toDateValue(event.end_date_time),
-            }]);
-            closeModal();
-            showExcellent({ message: `The event ${event.title} has been created successfully.` });
-        } catch (error) {
-            showOops({ error: error as ApiError });
-        }
-    }, [apiPost, closeModal]);
+    const handleCreate = useCallback(
+        async (sgaEvent: SGAEventCreate) => {
+            const payload = {
+                ...sgaEvent,
+                start_date_time:
+                    sgaEvent.start_date_time?.toISOString() ?? null,
+                end_date_time: sgaEvent.end_date_time?.toISOString() ?? null
+            };
+            try {
+                const event = await apiPost("/api/events", payload);
+                setData((current) => [
+                    ...current,
+                    {
+                        ...event,
+                        start_date_time: toDateValue(event.start_date_time),
+                        end_date_time: toDateValue(event.end_date_time)
+                    }
+                ]);
+                closeModal();
+                showExcellent({
+                    message: `The event ${event.title} has been created successfully.`
+                });
+            } catch (error) {
+                showOops({ error: error as ApiError });
+            }
+        },
+        [apiPost, closeModal]
+    );
 
     const handleDelete = useCallback(async () => {
         if (!deletingEvent) {
@@ -89,40 +110,59 @@ export function DashboardEvents() {
             await apiDelete(`/api/events/${deletingEvent.id}`);
             setDeletingEvent(null);
             setData((current) => {
-                return current.filter(x => x.id !== deletingEvent.id);
+                return current.filter((x) => x.id !== deletingEvent.id);
             });
-            showExcellent({ message: `The event ${deletingEvent.title} has been deleted successfully.` });
+            showExcellent({
+                message: `The event ${deletingEvent.title} has been deleted successfully.`
+            });
         } catch (error) {
             showOops({ error: error as ApiError });
         }
     }, [apiDelete, deletingEvent]);
 
-    const handleEdit = useCallback(async (sgaEvent: SGAEventCreate) => {
-        if (!editingEvent) {
-            return;
-        }
+    const handleEdit = useCallback(
+        async (sgaEvent: SGAEventCreate) => {
+            if (!editingEvent) {
+                return;
+            }
 
-        const payload = {
-            ...sgaEvent,
-            start_date_time: sgaEvent.start_date_time?.toISOString() ?? null,
-            end_date_time: sgaEvent.end_date_time?.toISOString() ?? null
-        };
+            const payload = {
+                ...sgaEvent,
+                start_date_time:
+                    sgaEvent.start_date_time?.toISOString() ?? null,
+                end_date_time: sgaEvent.end_date_time?.toISOString() ?? null
+            };
 
-        try {
-            const event = await apiPut(`/api/events/${editingEvent.id}`, payload);
-            setEditingEvent(null);
-            setData((current) => current.map(x => {
-                return x.id === event.id ? {
-                    ...event,
-                    start_date_time: toDateValue(event.start_date_time),
-                    end_date_time: toDateValue(event.end_date_time),
-                } : x;
-            }));
-            showExcellent({ message: `The event ${event.title} has been updated successfully.` });
-        } catch (error) {
-            showOops({ error: error as ApiError });
-        }
-    }, [apiPut, editingEvent]);
+            try {
+                const event = await apiPut(
+                    `/api/events/${editingEvent.id}`,
+                    payload
+                );
+                setEditingEvent(null);
+                setData((current) =>
+                    current.map((x) => {
+                        return x.id === event.id
+                            ? {
+                                  ...event,
+                                  start_date_time: toDateValue(
+                                      event.start_date_time
+                                  ),
+                                  end_date_time: toDateValue(
+                                      event.end_date_time
+                                  )
+                              }
+                            : x;
+                    })
+                );
+                showExcellent({
+                    message: `The event ${event.title} has been updated successfully.`
+                });
+            } catch (error) {
+                showOops({ error: error as ApiError });
+            }
+        },
+        [apiPut, editingEvent]
+    );
 
     const rows = useMemo(() => {
         return data.map((item) => {
@@ -150,10 +190,18 @@ export function DashboardEvents() {
                     <Table.Td>
                         <Group gap={0} justify="flex-end">
                             <ActionIcon color="gray" variant="transparent">
-                                <IconPencil style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => setEditingEvent(item)} />
+                                <IconPencil
+                                    style={{ width: rem(16), height: rem(16) }}
+                                    stroke={1.5}
+                                    onClick={() => setEditingEvent(item)}
+                                />
                             </ActionIcon>
                             <ActionIcon color="red" variant="transparent">
-                                <IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} onClick={() => setDeletingEvent(item)} />
+                                <IconTrash
+                                    style={{ width: rem(16), height: rem(16) }}
+                                    stroke={1.5}
+                                    onClick={() => setDeletingEvent(item)}
+                                />
                             </ActionIcon>
                         </Group>
                     </Table.Td>
@@ -168,7 +216,9 @@ export function DashboardEvents() {
 
     return (
         <>
-            <Text fw={600} pb={"md"}>Events</Text>
+            <Text fw={600} pb={"md"}>
+                Events
+            </Text>
             {error && <ErrorAlert error={error} />}
             {modalOpened && (
                 <EventModal
@@ -190,14 +240,20 @@ export function DashboardEvents() {
             {deletingEvent && (
                 <ConfirmDeletionModal
                     opened={deletingEvent !== null}
-                    close={() => { setDeletingEvent(null) }}
+                    close={() => {
+                        setDeletingEvent(null);
+                    }}
                     handleDelete={handleDelete}
-                />)
-            }
+                />
+            )}
             <Group>
-                <Button leftSection={<IconEdit size={14} />} variant="default" onClick={() => {
-                    openModal();
-                }}>
+                <Button
+                    leftSection={<IconEdit size={14} />}
+                    variant="default"
+                    onClick={() => {
+                        openModal();
+                    }}
+                >
                     Create New Event
                 </Button>
             </Group>
@@ -209,7 +265,8 @@ export function DashboardEvents() {
                                 onChange={toggleAll}
                                 checked={selection.length === data.length}
                                 indeterminate={
-                                    selection.length > 0 && selection.length !== data.length
+                                    selection.length > 0 &&
+                                    selection.length !== data.length
                                 }
                             />
                         </Table.Th>

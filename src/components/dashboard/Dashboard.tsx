@@ -19,7 +19,7 @@ export function Dashboard() {
                 <Route path="/users" element={<DashboardUsers />} />
                 <Route path="/roles" element={<DashboardRoles />} />
                 <Route path="/*" element={<NotFound />} />
-            </Routes >
+            </Routes>
         </DashboardLayout>
     );
 }
