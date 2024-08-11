@@ -15,7 +15,6 @@ export const DashboardLayout : React.FC<DashboardLayoutProps> = ({children}) => 
 
     const handleClose = useCallback(() => {
         closeMobile();
-        closeDesktop();
     }, [closeMobile, closeDesktop])
 
     return (
