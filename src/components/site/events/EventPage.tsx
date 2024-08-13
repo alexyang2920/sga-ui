@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useApi from "../../../hooks/useApi";
 
-import { toDateString, toDateValue } from "../../shared/dateUtils";
+import { formatTimeRange, toDateValue } from "../../shared/dateUtils";
 import Loading from "../../shared/Loading";
 import { NotFound } from "../../shared/NotFound";
 import { ErrorAlert } from "../../shared/ErrorAlert";
@@ -60,8 +60,7 @@ export function EventPage() {
             <Group>
                 <Text fw={600}>Time:</Text>
                 <Text>
-                    {toDateString(sgaEvent.start_date_time)} -{" "}
-                    {toDateString(sgaEvent.end_date_time)}
+                    {formatTimeRange(sgaEvent.start_date_time, sgaEvent.end_date_time)}
                 </Text>
             </Group>
 
