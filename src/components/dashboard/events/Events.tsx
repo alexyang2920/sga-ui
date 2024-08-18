@@ -8,10 +8,13 @@ import {
     Group,
     Button,
     ActionIcon,
-    Pagination
+    Pagination,
+    TextInput,
+    Input,
+    CloseButton
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEdit, IconPencil, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconPencil, IconSearch, IconTrash } from "@tabler/icons-react";
 import { EventModal } from "./EventModal";
 import { ApiError, SGAEvent, type SGAEventCreate } from "../../../api/schemas";
 import classes from "./Events.module.css";
@@ -70,10 +73,23 @@ export function DashboardEvents() {
 
     const [activePage, setActivePage] = useState<number>(1);
 
+    const [search, setSearch] = useState<string>('');
+    const [searchTerm, setSearchTerm] = useState<string>('');
+
     const [sort, setSort] = useState<{ column: ColumnDef; direction: 'asc' | 'desc' }>({
         column: 'id',
         direction: 'desc',
     });
+
+    const handleSearch = useCallback(() => {
+        setSearchTerm(search.trim());
+    }, [search]);
+
+    const handleSearchInputKeyDown = useCallback((event: { key: string; }) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+          }
+    }, [handleSearch]);
 
     const handleSort = useCallback((column: ColumnDef) => {
         setSort(prevSort => ({
@@ -83,7 +99,7 @@ export function DashboardEvents() {
     }, []);
 
     const fetchData = useCallback(() => {
-        apiGet(`/api/events?page_number=${activePage}&page_size=${PAGE_SIZE}&sort_by=${sort.column}&sort_order=${sort.direction}`)
+        apiGet(`/api/events?page_number=${activePage}&page_size=${PAGE_SIZE}&sort_by=${sort.column}&sort_order=${sort.direction}&search=${searchTerm}`)
             .then((res: PaginatedEventsResult) => {
                 setData({
                     totalCount: res.total_count,
@@ -100,7 +116,7 @@ export function DashboardEvents() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [apiGet, activePage, sort]);
+    }, [apiGet, activePage, sort, searchTerm]);
 
     useEffect(() => {
         fetchData();
@@ -288,7 +304,7 @@ export function DashboardEvents() {
                     handleDelete={handleDelete}
                 />
             )}
-            <Group>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <Button
                     leftSection={<IconEdit size={14} />}
                     variant="default"
@@ -298,7 +314,30 @@ export function DashboardEvents() {
                 >
                     Create New Event
                 </Button>
-            </Group>
+                <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1, maxWidth: '500px' }}>
+                    <TextInput
+                        placeholder="Search by title"
+                        value={search}
+                        onChange={(event) => setSearch(event.currentTarget.value)}
+                        style={{ flex: 1, marginRight: '0.5rem' }}
+                        onKeyDown={handleSearchInputKeyDown}
+                        leftSection={<IconSearch size={14} />}
+                        rightSection={
+                            <CloseButton
+                                aria-label="Clear input"
+                                onClick={() => setSearch('')}
+                                style={{ display: search ? undefined : 'none' }}
+                            />
+                        }
+                    />
+                    <Button
+                        variant="default"
+                        onClick={handleSearch}
+                    >
+                        Search
+                    </Button>
+                </div>
+            </div>
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>
                     <Table.Tr>
@@ -331,7 +370,6 @@ export function DashboardEvents() {
                             </Button>
                         </Table.Th>
                         <Table.Th>
-                        <Table.Th>
                             <Button
                                 variant="subtle"
                                 onClick={() => handleSort('location')}
@@ -339,7 +377,6 @@ export function DashboardEvents() {
                             >
                                 Location {sort.column === 'location' && (sort.direction === 'asc' ? '↑' : '↓')}
                             </Button>
-                        </Table.Th>
                         </Table.Th>
                         <Table.Th>
                             <Button
