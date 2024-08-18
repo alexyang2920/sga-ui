@@ -15,7 +15,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { IconEdit, IconPencil, IconSearch, IconTrash } from "@tabler/icons-react";
 import { EventModal } from "./EventModal";
-import { ApiError, SGAEvent, type SGAEventCreate } from "../../../api/schemas";
+import { ApiError, SGAEvent, type SGAEventCreate, type PaginatedEventsResult } from "../../../api/schemas";
 import classes from "./Events.module.css";
 import useApi from "../../../hooks/useApi";
 import { ErrorAlert } from "../../shared/ErrorAlert";
@@ -24,20 +24,6 @@ import { showExcellent, showOops } from "../../shared/notification";
 import { ConfirmDeletionModal } from "../../shared/ConfirmDeletionModal";
 
 import { toDateString, toDateValue } from "../../shared/dateUtils";
-
-
-type PaginatedEvent = Omit<SGAEvent, 'start_date_time' | 'end_date_time'> & {
-    start_date_time: string | null;
-    end_date_time: string | null;
-};
-
-
-interface PaginatedEventsResult {
-    total_count: number;
-    page_size: number;
-    page_number: number;
-    items: PaginatedEvent[];
-}
 
 
 interface DataType {

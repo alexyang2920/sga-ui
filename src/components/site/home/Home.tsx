@@ -1,7 +1,7 @@
 import { Container, Divider, Text } from "@mantine/core";
 import { EventGrid } from "./EventGrid";
 import { useState, useEffect } from "react";
-import { SGAEvent } from "../../../api/schemas";
+import { SGAEvent, type PaginatedEventsResult } from "../../../api/schemas";
 import useApi from "../../../hooks/useApi";
 import { toDateValue } from "../../shared/dateUtils";
 import Loading from "../../shared/Loading";
@@ -14,10 +14,10 @@ export function Home() {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        apiGet("/api/events")
-            .then((res: any[]) => {
+        apiGet("/api/events?pageSize=20&sort_by=id&sort_order=desc")
+            .then((res: PaginatedEventsResult) => {
                 setSgaEvents(
-                    res.map((x) => ({
+                    res.items.map((x) => ({
                         ...x,
                         start_date_time: toDateValue(x.start_date_time),
                         end_date_time: toDateValue(x.end_date_time)

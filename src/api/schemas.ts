@@ -40,3 +40,15 @@ export interface SGAEvent {
 }
 
 export type SGAEventCreate = Omit<SGAEvent, "id">;
+
+export type PaginatedEvent = Omit<SGAEvent, 'start_date_time' | 'end_date_time'> & {
+    start_date_time: string | null;
+    end_date_time: string | null;
+};
+
+export interface PaginatedEventsResult {
+    total_count: number;
+    page_size: number;
+    page_number: number;
+    items: PaginatedEvent[];
+}
