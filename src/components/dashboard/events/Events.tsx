@@ -10,7 +10,6 @@ import {
     ActionIcon,
     Pagination,
     TextInput,
-    Input,
     CloseButton
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -304,7 +303,7 @@ export function DashboardEvents() {
                     handleDelete={handleDelete}
                 />
             )}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', minWidth: '500px'}}>
                 <Button
                     leftSection={<IconEdit size={14} />}
                     variant="default"
