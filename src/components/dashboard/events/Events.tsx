@@ -7,7 +7,8 @@ import {
     rem,
     Group,
     Button,
-    ActionIcon
+    ActionIcon,
+    Pagination
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconEdit, IconPencil, IconTrash } from "@tabler/icons-react";
@@ -22,6 +23,30 @@ import { ConfirmDeletionModal } from "../../shared/ConfirmDeletionModal";
 
 import { toDateString, toDateValue } from "../../shared/dateUtils";
 
+
+type PaginatedEvent = Omit<SGAEvent, 'start_date_time' | 'end_date_time'> & {
+    start_date_time: string | null;
+    end_date_time: string | null;
+};
+
+
+interface PaginatedEventsResult {
+    total_count: number;
+    page_size: number;
+    page_number: number;
+    items: PaginatedEvent[];
+}
+
+
+interface DataType {
+    totalCount: number;
+    events: SGAEvent[];
+}
+
+
+const PAGE_SIZE = 20;
+
+
 export function DashboardEvents() {
     const [modalOpened, { open: openModal, close: closeModal }] =
         useDisclosure(false);
@@ -31,22 +56,28 @@ export function DashboardEvents() {
 
     const { apiGet, apiPost, apiPut, apiDelete } = useApi();
 
-    const [data, setData] = useState<SGAEvent[]>([]);
+    const [data, setData] = useState<DataType>({
+        totalCount: 0,
+        events: []
+    });
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     const [selection, setSelection] = useState<number[]>([]);
 
-    useEffect(() => {
-        apiGet("/api/events")
-            .then((res: any[]) => {
-                setData(
-                    res.map((x) => ({
+    const [activePage, setActivePage] = useState<number>(1);
+
+    const fetchData = useCallback(() => {
+        apiGet(`/api/events?page_number=${activePage}&page_size=${PAGE_SIZE}`)
+            .then((res: PaginatedEventsResult) => {
+                setData({
+                    totalCount: res.total_count,
+                    events: res.items.map((x) => ({
                         ...x,
                         start_date_time: toDateValue(x.start_date_time),
                         end_date_time: toDateValue(x.end_date_time)
                     }))
-                );
+                });
             })
             .catch((error) => {
                 setError((error as ApiError).message);
@@ -54,7 +85,11 @@ export function DashboardEvents() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [apiGet]);
+    }, [apiGet, activePage]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const toggleRow = useCallback((id: number) => {
         setSelection((current) => {
@@ -66,9 +101,9 @@ export function DashboardEvents() {
 
     const toggleAll = useCallback(() => {
         setSelection((current) => {
-            return current.length === data.length
+            return current.length === data.events.length
                 ? []
-                : data.map((item) => item.id);
+                : data.events.map((item) => item.id);
         });
     }, []);
 
@@ -82,15 +117,8 @@ export function DashboardEvents() {
             };
             try {
                 const event = await apiPost("/api/events", payload);
-                setData((current) => [
-                    ...current,
-                    {
-                        ...event,
-                        start_date_time: toDateValue(event.start_date_time),
-                        end_date_time: toDateValue(event.end_date_time)
-                    }
-                ]);
                 closeModal();
+                await fetchData();
                 showExcellent({
                     message: `The event ${event.title} has been created successfully.`
                 });
@@ -98,7 +126,7 @@ export function DashboardEvents() {
                 showOops({ error: error as ApiError });
             }
         },
-        [apiPost, closeModal]
+        [apiPost, closeModal, fetchData]
     );
 
     const handleDelete = useCallback(async () => {
@@ -109,16 +137,14 @@ export function DashboardEvents() {
         try {
             await apiDelete(`/api/events/${deletingEvent.id}`);
             setDeletingEvent(null);
-            setData((current) => {
-                return current.filter((x) => x.id !== deletingEvent.id);
-            });
+            await fetchData();
             showExcellent({
                 message: `The event ${deletingEvent.title} has been deleted successfully.`
             });
         } catch (error) {
             showOops({ error: error as ApiError });
         }
-    }, [apiDelete, deletingEvent]);
+    }, [apiDelete, deletingEvent, fetchData]);
 
     const handleEdit = useCallback(
         async (sgaEvent: SGAEventCreate) => {
@@ -139,21 +165,22 @@ export function DashboardEvents() {
                     payload
                 );
                 setEditingEvent(null);
-                setData((current) =>
-                    current.map((x) => {
+                setData((current) => ({
+                    ...current,
+                    events: current.events.map((x) => {
                         return x.id === event.id
                             ? {
-                                  ...event,
-                                  start_date_time: toDateValue(
-                                      event.start_date_time
-                                  ),
-                                  end_date_time: toDateValue(
-                                      event.end_date_time
-                                  )
-                              }
+                                ...event,
+                                start_date_time: toDateValue(
+                                    event.start_date_time
+                                ),
+                                end_date_time: toDateValue(
+                                    event.end_date_time
+                                )
+                            }
                             : x;
                     })
-                );
+                }));
                 showExcellent({
                     message: `The event ${event.title} has been updated successfully.`
                 });
@@ -165,7 +192,7 @@ export function DashboardEvents() {
     );
 
     const rows = useMemo(() => {
-        return data.map((item) => {
+        return data.events.map((item) => {
             const selected = selection.includes(item.id);
             return (
                 <Table.Tr
@@ -263,10 +290,10 @@ export function DashboardEvents() {
                         <Table.Th style={{ width: rem(40) }}>
                             <Checkbox
                                 onChange={toggleAll}
-                                checked={selection.length === data.length}
+                                checked={selection.length === data.events.length}
                                 indeterminate={
                                     selection.length > 0 &&
-                                    selection.length !== data.length
+                                    selection.length !== data.events.length
                                 }
                             />
                         </Table.Th>
@@ -280,6 +307,7 @@ export function DashboardEvents() {
                 </Table.Thead>
                 <Table.Tbody>{rows}</Table.Tbody>
             </Table>
+            <Pagination total={Math.ceil(data.totalCount / PAGE_SIZE)} siblings={1} value={activePage} mt="lg" onChange={setActivePage} />
         </>
     );
 }
