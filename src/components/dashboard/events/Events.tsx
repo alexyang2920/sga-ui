@@ -47,6 +47,9 @@ interface DataType {
 const PAGE_SIZE = 20;
 
 
+type ColumnDef = 'start_date_time' | 'end_date_time' | 'id' | 'location' | 'title';
+
+
 export function DashboardEvents() {
     const [modalOpened, { open: openModal, close: closeModal }] =
         useDisclosure(false);
@@ -67,8 +70,20 @@ export function DashboardEvents() {
 
     const [activePage, setActivePage] = useState<number>(1);
 
+    const [sort, setSort] = useState<{ column: ColumnDef; direction: 'asc' | 'desc' }>({
+        column: 'id',
+        direction: 'desc',
+    });
+
+    const handleSort = useCallback((column: ColumnDef) => {
+        setSort(prevSort => ({
+            column: column,
+            direction: prevSort.column === column ? (prevSort.direction === 'asc' ? 'desc' : 'asc') : 'asc',
+        }));
+    }, []);
+
     const fetchData = useCallback(() => {
-        apiGet(`/api/events?page_number=${activePage}&page_size=${PAGE_SIZE}`)
+        apiGet(`/api/events?page_number=${activePage}&page_size=${PAGE_SIZE}&sort_by=${sort.column}&sort_order=${sort.direction}`)
             .then((res: PaginatedEventsResult) => {
                 setData({
                     totalCount: res.total_count,
@@ -85,7 +100,7 @@ export function DashboardEvents() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [apiGet, activePage]);
+    }, [apiGet, activePage, sort]);
 
     useEffect(() => {
         fetchData();
@@ -297,11 +312,53 @@ export function DashboardEvents() {
                                 }
                             />
                         </Table.Th>
-                        <Table.Th>ID</Table.Th>
-                        <Table.Th>Title</Table.Th>
-                        <Table.Th>Location</Table.Th>
-                        <Table.Th>Start Date Time</Table.Th>
-                        <Table.Th>End Date Time</Table.Th>
+                        <Table.Th>
+                            <Button
+                                variant="subtle"
+                                onClick={() => handleSort('id')}
+                                style={{ width: '100%', textAlign: 'left' }}
+                            >
+                                ID {sort.column === 'id' && (sort.direction === 'asc' ? '↑' : '↓')}
+                            </Button>
+                        </Table.Th>
+                        <Table.Th>
+                            <Button
+                                variant="subtle"
+                                onClick={() => handleSort('title')}
+                                style={{ width: '100%', textAlign: 'left' }}
+                            >
+                                Title {sort.column === 'title' && (sort.direction === 'asc' ? '↑' : '↓')}
+                            </Button>
+                        </Table.Th>
+                        <Table.Th>
+                        <Table.Th>
+                            <Button
+                                variant="subtle"
+                                onClick={() => handleSort('location')}
+                                style={{ width: '100%', textAlign: 'left' }}
+                            >
+                                Location {sort.column === 'location' && (sort.direction === 'asc' ? '↑' : '↓')}
+                            </Button>
+                        </Table.Th>
+                        </Table.Th>
+                        <Table.Th>
+                            <Button
+                                variant="subtle"
+                                onClick={() => handleSort('start_date_time')}
+                                style={{ width: '100%', textAlign: 'left' }}
+                            >
+                                Start Date Time {sort.column === 'start_date_time' && (sort.direction === 'asc' ? '↑' : '↓')}
+                            </Button>
+                        </Table.Th>
+                        <Table.Th>
+                            <Button
+                                variant="subtle"
+                                onClick={() => handleSort('end_date_time')}
+                                style={{ width: '100%', textAlign: 'left' }}
+                            >
+                                End Date Time {sort.column === 'end_date_time' && (sort.direction === 'asc' ? '↑' : '↓')}
+                            </Button>
+                        </Table.Th>
                         <Table.Th></Table.Th>
                     </Table.Tr>
                 </Table.Thead>
