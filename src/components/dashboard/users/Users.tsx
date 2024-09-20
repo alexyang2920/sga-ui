@@ -1,22 +1,26 @@
 import cx from "clsx";
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { Table, Checkbox, Group, Text, rem } from "@mantine/core";
+import { Table, Checkbox, Group, Text, rem, ActionIcon } from "@mantine/core";
 import classes from "./Users.module.css";
-import { ApiError, User } from "../../../api/schemas";
+import { ApiError, EditUser, User } from "../../../api/schemas";
 import useApi from "../../../hooks/useApi";
 import { ErrorAlert } from "../../shared/ErrorAlert";
 import Loading from "../../shared/Loading";
+import { UserModal } from './UserModal';
+import { showExcellent, showOops } from '../../shared/notification';
+import { IconPencil } from '@tabler/icons-react';
 
 export function DashboardUsers() {
     const [selection, setSelection] = useState<number[]>([]);
+    const [editingUser, setEditingUser] = useState<User | null>(null);
 
-    const { apiGet } = useApi();
+    const { apiGet, apiPut } = useApi();
 
     const [loading, setLoading] = useState<boolean>(true);
     const [data, setData] = useState<User[]>([]);
     const [error, setError] = useState<string>("");
 
-    useEffect(() => {
+    const fetchData = useCallback(() => {
         apiGet("/api/users")
             .then((res) => {
                 setData(res);
@@ -27,6 +31,10 @@ export function DashboardUsers() {
             .finally(() => {
                 setLoading(false);
             });
+    }, [apiGet]);
+
+    useEffect(() => {
+        fetchData();
     }, [apiGet]);
 
     const toggleRow = useCallback((id: number) => {
@@ -42,6 +50,40 @@ export function DashboardUsers() {
             current.length === data.length ? [] : data.map((item) => item.id)
         );
     }, []);
+
+    const handleEdit = useCallback(
+        async (editUser: EditUser) => {
+            if (!editingUser) {
+                return;
+            }
+
+            const payload = {
+                ...editUser
+            };
+
+            try {
+                const user = await apiPut(
+                    `/api/users/${editingUser.id}`,
+                    payload
+                );
+                setEditingUser(null);
+                setData((current) => (current.map((x) => {
+                        return x.id === user.id
+                            ? {
+                                ...user,
+                            }
+                            : x;
+                    })
+                ));
+                showExcellent({
+                    message: `The user ${user.name} has been updated successfully.`
+                });
+            } catch (error) {
+                showOops({ error: error as ApiError });
+            }
+        },
+        [apiPut, editingUser]
+    );
 
     const rows = useMemo(
         () =>
@@ -68,6 +110,16 @@ export function DashboardUsers() {
                         </Table.Td>
                         <Table.Td>{item.email}</Table.Td>
                         <Table.Td>{roleNames}</Table.Td>
+                        <Table.Td>{item.is_active ? 'YES' : 'NO'}</Table.Td>
+                        <Table.Td>
+                            <ActionIcon color="gray" variant="transparent">
+                                <IconPencil
+                                    style={{ width: rem(16), height: rem(16) }}
+                                    stroke={1.5}
+                                    onClick={() => setEditingUser(item)}
+                                />
+                            </ActionIcon>
+                        </Table.Td>
                     </Table.Tr>
                 );
             }),
@@ -84,6 +136,14 @@ export function DashboardUsers() {
                 Users
             </Text>
             {error && <ErrorAlert error={error} />}
+            {editingUser && (
+                <UserModal
+                    opened={editingUser != null}
+                    close={() => setEditingUser(null)}
+                    user={editingUser}
+                    onSubmit={handleEdit}
+                />
+            )}
             <Table miw={800} verticalSpacing="sm">
                 <Table.Thead>
                     <Table.Tr>
@@ -100,6 +160,7 @@ export function DashboardUsers() {
                         <Table.Th>User</Table.Th>
                         <Table.Th>Email</Table.Th>
                         <Table.Th>Role</Table.Th>
+                        <Table.Th>Enabled</Table.Th>
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>{rows}</Table.Tbody>

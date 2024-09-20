@@ -11,6 +11,12 @@ export interface User {
     roles: Role[];
 }
 
+export interface EditUser {
+    id: number;
+    name: string;
+    is_active: boolean;
+}
+
 export interface ApiErrorDetail {
     field: string;
     message: string;
