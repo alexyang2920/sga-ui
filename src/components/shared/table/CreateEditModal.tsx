@@ -1,11 +1,16 @@
 import { Button, Checkbox, Group, Modal, TextInput } from "@mantine/core";
 import { useCallback, useState } from "react";
 
-import type { SgaRecordCreate } from './interfaces';
+import type { SgaRecord, SgaRecordCreate } from './interfaces';
 import { FieldDef } from './SgaTable';
+import { DateTimePicker } from '@mantine/dates';
+import { ContentEditorWrapper } from './ContentEditor';
 
 
-function initRecord(fields: FieldDef[]) : SgaRecordCreate {
+function initRecord(fields: FieldDef[], existingRecord?: SgaRecord) : SgaRecordCreate {
+    if (existingRecord) {
+        return {...existingRecord};
+    }
     return fields.reduce((result, field) => {
         result[field.name] = field.type === 'boolean' ? false : '';
         return result;
@@ -13,10 +18,11 @@ function initRecord(fields: FieldDef[]) : SgaRecordCreate {
 }
 
 
-interface CreateModalProps {
+interface CreateEditModalProps {
     title: string;
     opened: boolean;
     fields: FieldDef[];
+    selected?: SgaRecord;
     onClose: () => void;
     onSubmit: (record: SgaRecordCreate) => void;
 }
@@ -26,14 +32,15 @@ interface CreateModalProps {
  * such that the editor can be recreated,
  * otherwise no way to clear the old text in the editor.
  */
-export function CreateModal({
+export function CreateEditModal({
     title,
     onClose,
     onSubmit,
     opened,
     fields,
-}: CreateModalProps) {
-    const [record, setRecord] = useState<SgaRecordCreate>(initRecord(fields));
+    selected,
+}: CreateEditModalProps) {
+    const [record, setRecord] = useState<SgaRecordCreate>(initRecord(fields, selected));
 
     const handleSubmit = useCallback(() => {
         onSubmit(record);
@@ -58,6 +65,18 @@ export function CreateModal({
                 ...previous,
                 [field]: event.target.checked
             }));
+        };
+    }, []);
+
+    const handleDateChange = useCallback((field: string) => {
+        return (value: Date | null) => {
+            setRecord((previous) => ({ ...previous, [field]: value }));
+        };
+    }, []);
+
+    const handleRichTextUpdate = useCallback((field: string) => {
+        return (content: string) => {
+            setRecord((previous) => ({ ...previous, [field]: content }));
         };
     }, []);
 
@@ -90,8 +109,31 @@ export function CreateModal({
                                 onChange={handleInputChange(field.name)}
                             />
                         );
-                    } else {
-                        return (<div>Unknown</div>);
+                    } else if (field.type === 'date') {
+                        return (
+                            <DateTimePicker
+                                key={field.name}
+                                label={field.label}
+                                placeholder="Pick date and time"
+                                valueFormat="YYYY-MM-DD HH:mm:ss"
+                                value={record[field.name]}
+                                onChange={handleDateChange(field.name)}
+                                mt="md"
+                            />
+                        )
+                    } else if (field.type === 'richtext') {
+                        return (
+                            <ContentEditorWrapper
+                                key={field.name}
+                                fieldName={field.name}
+                                fieldLabel={field.label}
+                                initContent={record[field.name] ?? ''}
+                                onContentUpdate={handleRichTextUpdate}
+                            />
+                        );
+                    }
+                    else {
+                        return (<div key={field.name} >Unknown</div>);
                     }
                 })
             }

@@ -18,26 +18,27 @@ import classes from "./SgaTable.module.css";
 import { showExcellent, showOops } from "../notification";
 
 import { SgaRecordCreate, SgaRecordUpdate, SgaRecord } from "./interfaces";
-import { DeletionModal } from "./DeletionModal";
-import { EditModal } from './EditModal';
-import { CreateModal } from './CreateModal';
+import { DeleteModal } from "./DeleteModal";
+import { CreateEditModal } from './CreateEditModal';
 import useApi from '../../../hooks/useApi';
 import { ErrorAlert } from '../ErrorAlert';
 import Loading from '../Loading';
 
 type DirectionDef = 'asc' | 'desc';
+type FieldType = 'boolean' | 'string' | 'number' | 'date' | 'richtext';
 
 export interface ColumnDef {
     label: string;
     field: string;
-    type: 'boolean' | 'string' | 'number';
+    type: FieldType;
     format?: (value: any) => void;
+    toValue?: (value: any) => void;
 }
 
 export interface FieldDef {
     label: string;
     name: string;
-    type: 'boolean' | 'string' | 'number';
+    type: FieldType;
 }
 
 interface QueryParams {
@@ -103,9 +104,17 @@ export function SgaTable({
         const { pageNumber, pageSize, sortColumn, sortOrder, searchTerm } = queryParams;
         await apiGet(`${baseUrl}?page_number=${pageNumber}&page_size=${pageSize}&sort_by=${sortColumn}&sort_order=${sortOrder}&search=${searchTerm}`)
             .then((res) => {
+                const records = res.items.map((item: SgaRecord) => {
+                    return columns.reduce((res, column) => {
+                        if (column.toValue) {
+                            res[column.field] = column.toValue(res[column.field]);
+                        }
+                        return res;
+                    }, {...item});
+                });
                 setData({
                     total: res.total_count,
-                    records: res.items,
+                    records: records,
                 });
             })
             .catch((error) => {
@@ -114,7 +123,7 @@ export function SgaTable({
             .finally(() => {
                 setLoading(false);
             });
-    }, [apiGet, queryParams, baseUrl]);
+    }, [apiGet, queryParams, baseUrl, columns]);
 
     useEffect(() => {
         fetchData();
@@ -275,7 +284,7 @@ export function SgaTable({
         <>
             {error && <ErrorAlert error={error} />}
             {creationModalOpened && (
-                <CreateModal
+                <CreateEditModal
                     title={createModalTitle ?? "Create New Record"}
                     opened={creationModalOpened}
                     onClose={closeCreationModal}
@@ -284,16 +293,17 @@ export function SgaTable({
                 />
             )}
             {editingRecord && (
-                <EditModal
+                <CreateEditModal
                     title={editModalTitle ?? "Edit Record"}
                     selected={editingRecord}
+                    opened={!!editingRecord}
                     onClose={() => setEditingRecord(null)}
                     onSubmit={handleUpdate}
                     fields={editModalFields}                
                 />
             )}
             {deletingRecord && (
-                <DeletionModal
+                <DeleteModal
                     opened={deletingRecord !== null}
                     onClose={() => {
                         setDeletingRecord(null);

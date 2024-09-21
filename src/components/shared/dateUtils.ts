@@ -1,4 +1,4 @@
-export function toDateString(dateValue: Date | null) {
+export function toDateString(dateValue: Date | null | undefined) {
     return dateValue ? (dateValue?.toISOString() ?? "") : "";
 }
 

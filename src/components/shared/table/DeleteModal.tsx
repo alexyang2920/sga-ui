@@ -1,16 +1,16 @@
 import { Modal, Group, Button, Text } from "@mantine/core";
 
-interface DeletionModalProps {
+interface DeleteModalProps {
     opened: boolean;
     onClose: () => void;
     onDelete: () => void;
 }
 
-export function DeletionModal({
+export function DeleteModal({
     opened,
     onClose,
     onDelete,
-}: DeletionModalProps) {
+}: DeleteModalProps) {
     return (
         <Modal opened={opened} onClose={onClose} title="Confirm Deletion">
             <Text>Are you sure you want to delete this record?</Text>

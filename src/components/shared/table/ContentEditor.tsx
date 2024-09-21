@@ -7,7 +7,34 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+
+interface ContentEditorWrapperProps {
+    fieldName: string;
+    fieldLabel: string;
+    initContent?: string | null;
+    onContentUpdate: (field: string) => (content: string) => void;
+}
+
+export function ContentEditorWrapper({ fieldName, fieldLabel , initContent, onContentUpdate }: ContentEditorWrapperProps ) {
+    const [content, _] = useState<string | undefined | null>(initContent);
+    const body = useMemo(() => {
+        return (
+            <ContentEditor
+                key={fieldName}
+                label={fieldLabel}
+                initContent={content ?? ''}
+                onContentUpdate={onContentUpdate(fieldName)}
+            />
+        )
+    }, [fieldName, fieldLabel]);
+    return (
+        <>
+            {body}
+        </>
+    );
+}
+
 
 interface ContentEditorProps {
     label: string;
@@ -15,7 +42,7 @@ interface ContentEditorProps {
     onContentUpdate: (content: string) => void;
 }
 
-export function ContentEditor({
+function ContentEditor({
     label,
     onContentUpdate,
     initContent
@@ -47,7 +74,7 @@ export function ContentEditor({
     return (
         <>
             <Text mt="md">{label}</Text>
-            <RichTextEditor editor={editor}>
+            <RichTextEditor editor={editor} mih="240px">
                 <RichTextEditor.Toolbar sticky stickyOffset={60}>
                     <RichTextEditor.ControlsGroup>
                         <RichTextEditor.Bold />
