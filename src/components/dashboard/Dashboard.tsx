@@ -5,6 +5,7 @@ import { DashboardForm } from "./forms/Form";
 import { DashboardForms } from "./forms/Forms";
 import { DashboardHome } from "./DashboardHome";
 import { DashboardRoles } from "./roles/Roles";
+import { DashboardTutoringPrograms } from "./tutoring/TutoringPrograms";
 import { NotFound } from "../shared/NotFound";
 import { DashboardLayout } from "./layout/DashboardLayout";
 
@@ -18,6 +19,7 @@ export function Dashboard() {
                 <Route path="/events" element={<DashboardEvents />} />
                 <Route path="/users" element={<DashboardUsers />} />
                 <Route path="/roles" element={<DashboardRoles />} />
+                <Route path="/tutoring" element={<DashboardTutoringPrograms />} />
                 <Route path="/*" element={<NotFound />} />
             </Routes>
         </DashboardLayout>

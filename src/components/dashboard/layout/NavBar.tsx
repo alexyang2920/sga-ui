@@ -6,7 +6,8 @@ import {
     IconAbc,
     IconDashboard,
     IconForms,
-    IconUsers
+    IconUsers,
+    IconSchool,
 } from "@tabler/icons-react";
 import classes from "./NavBar.module.css";
 import { Anchor, Group, Text } from "@mantine/core";
@@ -18,7 +19,8 @@ const data = [
     { link: "/dashboard/users", label: "Users", icon: IconUsers },
     { link: "/dashboard/roles", label: "Roles", icon: Icon360 },
     { link: "/dashboard/events", label: "Events", icon: IconAbc },
-    { link: "/dashboard/forms", label: "Forms", icon: IconForms }
+    { link: "/dashboard/forms", label: "Forms", icon: IconForms },
+    { link: "/dashboard/tutoring", label: "Tutoring Programs", icon: IconSchool },
 ];
 
 function getActiveLable(pathname: string) {
