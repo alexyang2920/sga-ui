@@ -8,6 +8,7 @@ import { DashboardRoles } from "./roles/Roles";
 import { DashboardTutoringPrograms } from "./tutoring/TutoringPrograms";
 import { NotFound } from "../shared/NotFound";
 import { DashboardLayout } from "./layout/DashboardLayout";
+import { DashboardTutoringProgram } from './tutoring/TutoringProgram';
 
 export function Dashboard() {
     return (
@@ -20,6 +21,7 @@ export function Dashboard() {
                 <Route path="/users" element={<DashboardUsers />} />
                 <Route path="/roles" element={<DashboardRoles />} />
                 <Route path="/tutoring" element={<DashboardTutoringPrograms />} />
+                <Route path="/tutoring/:id" element={<DashboardTutoringProgram />} />
                 <Route path="/*" element={<NotFound />} />
             </Routes>
         </DashboardLayout>
